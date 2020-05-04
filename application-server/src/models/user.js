@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 const userSchema = new mongoose.Schema({
     'email':{
@@ -34,7 +35,7 @@ userSchema.methods.generateToken = async function(){
 
     const currUser = this
 
-    const currToken = jwt.sign({ _id: currUser._id.toString()}, TOKEN_KEY)
+    const currToken = jwt.sign({ _id: currUser._id.toString()}, process.env.TOKEN_KEY)
 
     currUser.tokens = currUser.tokens.concat({'token': currToken})
 
