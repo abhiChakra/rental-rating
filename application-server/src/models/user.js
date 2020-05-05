@@ -31,6 +31,12 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+userSchema.virtual('listings', {
+    ref: 'Listing',
+    localField: 'username',
+    foreignField: 'contributor'
+})
+
 userSchema.methods.generateToken = async function(){
 
     const currUser = this

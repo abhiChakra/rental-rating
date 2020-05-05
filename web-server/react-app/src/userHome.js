@@ -1,11 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 class UserHome extends React.Component {
     constructor(props){
         super(props)
         this.state = {
                     userMessage : "Default message", 
-                    authenticated : false
+                    authenticated : false,
+                    userListings : []
                     }
     }
 
@@ -35,6 +37,29 @@ class UserHome extends React.Component {
         })
     }
 
+    fetchUserListings(){
+        fetch('http://127.0.0.1:5000/get_listings', {
+                                                    method : 'GET',
+                                                    mode: 'cors',
+                                                    headers: {
+                                                        'Accept' : 'application/json',
+                                                    }, 
+                                                    credentials: 'include'
+                                                    }
+        ).then((res) => {
+            if(res.status == 200){
+                (res.json()).then(res => {
+                    this.setState({userListings : res.response})
+                })
+            } else{
+                (res.json()).then(res => {
+                    this.setState({userMessage : res.response})
+                })
+            }
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
 
     fetchUsermessage(){
         let currUsername = this.props.match.params.username;
@@ -63,17 +88,37 @@ class UserHome extends React.Component {
     }
 
     componentDidMount(){
-        this.fetchUsermessage()
+        this.fetchUsermessage();
+        this.fetchUserListings();
     }
 
     render(){
         return(
             <div>
-                <MessageDisplay userMessage={this.state.userMessage} fetchUsermessage={() => this.fetchUsermessage()}/>
-                <LogoutButton authenticated={this.state.authenticated} logoutAction={(event) => this.logoutAction(event)} />
+                <MessageDisplay userMessage={this.state.userMessage} fetchUsermessage={() => this.fetchUsermessage()}/> <br/>
+                <LogoutButton authenticated={this.state.authenticated} logoutAction={(event) => this.logoutAction(event)} /> <br />
+                <CreateListing authenticated={this.state.authenticated} /> <br />
+
+                <h4>Your listings: </h4>
+                <UserListings userListings={this.state.userListings}/>
             </div>
         )
     }
+}
+
+function UserListings(props){
+    return props.userListings.map(listing => {
+        let pathname = '/listing/' + listing._id 
+        return(
+            <div> 
+               <Link to={{
+                   pathname: pathname
+               }}>Address: {listing.number} {listing.street}, 
+               {listing.city}, {listing.province}, {listing.country}</Link>
+               <br/>
+            </div>
+        )
+    })
 }
 
 function MessageDisplay(props){
@@ -88,6 +133,18 @@ function LogoutButton(props){
             <button onClick={props.logoutAction}>Logout</button>
         )
     }else{
+        return(
+            null
+        )
+    }
+}
+
+function CreateListing(props){
+    if(props.authenticated){
+        return(
+            <Link to='/user/create_listing'>Create new Listing</Link>
+        )
+    } else{
         return(
             null
         )
