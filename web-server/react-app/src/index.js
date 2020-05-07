@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Container from './container';
+import Container from './js/container';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(

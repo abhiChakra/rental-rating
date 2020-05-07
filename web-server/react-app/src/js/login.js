@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Navbar from './navbar';
+import '../css/login.css'
 
 
 class LoginForm extends React.Component {
@@ -8,33 +9,34 @@ class LoginForm extends React.Component {
         this.state = {
             username : null,
             password : null,
-            message : null,
-            authenticated : false
+            message : null
         }
     }
 
-    componentDidMount(){
+    checkAuthenticated(){
         fetch('http://127.0.0.1:5000/user/is_authenticated', {
-                                                    method: 'GET',
-                                                    mode: 'cors',
-                                                    headers:{
-                                                        'Accept' : 'application/json'
-                                                    },
-                                                    credentials: 'include'
-                                                    }
-        ).then((res) => {
+                                                            method: 'GET', 
+                                                            mode: 'cors',
+                                                            headers:{
+                                                                'Accept' : 'application/json'
+                                                            },
+                                                            credentials : 'include'
+                                                            }
+        ).then(res => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                    this.setState({authenticated : true})
-                    let currFetch = '/user/profile/' + res.username.toString();
-                    this.props.history.push(currFetch);
+                    this.props.history.push('/user/profile/' + res.response.username)
                 })
             } else{
-                this.setState({authenticated : false})
+                return null;
             }
         }).catch((error) => {
             console.log(error)
         })
+    }
+
+    componentDidMount(){
+       this.checkAuthenticated();
     }
 
     handleUsernameChange(event){
@@ -66,7 +68,6 @@ class LoginForm extends React.Component {
         ).then((res) => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                    this.setState({authenticated : true});
                     let fetchURL = '/user/profile/' + res.username.toString();
                     this.props.history.push(fetchURL);
                 })
@@ -83,18 +84,19 @@ class LoginForm extends React.Component {
     render(){
         return(
             <div>
-                <p>login page</p>
-                <Link to='/'>Home</Link>
-
-                <br />
-                <Username handleUsernameChange={(event) => this.handleUsernameChange(event)} />
-                <br />
-                <Password handlePasswordChange={(event) => this.handlePasswordChange(event)} />
-                <br />
-                <SubmitCreds submitCreds={(event) => this.submitCreds(event)} />
-                <br />
-
-                <Message message={this.state.message} />
+                <Navbar />
+                <div className='loginContainer'>
+                    <div id='loginCreds' className='container'>
+                        <form>
+                            <Username handleUsernameChange={(event) => this.handleUsernameChange(event)} />
+                            <Password handlePasswordChange={(event) => this.handlePasswordChange(event)} />
+                            <br/>
+                            <SubmitCreds submitCreds={(event) => this.submitCreds(event)} />
+                            <br />
+                        </form>
+                        <Message message={this.state.message} />
+                    </div>
+                </div>
             </div>
         )
     }
@@ -102,19 +104,25 @@ class LoginForm extends React.Component {
 
 function Username(props){
     return(
-        <input onChange={props.handleUsernameChange} placeholder='username'></input>
+        <div className="form-group">
+            <input type="username" className='loginUsername' className="form-control" id="usernameInput" onChange={props.handleUsernameChange} placeholder='username'></input>
+        </div>
     )
 }
 
 function Password(props){
     return(
-        <input type='password' onChange={props.handlePasswordChange} placeholder='password'></input>
+        <div className="form-group">
+            <input type="password" className='loginPassword' className="form-control" id="passwordInput" onChange={props.handlePasswordChange} placeholder='password'></input>
+        </div>   
     )
 }
 
 function SubmitCreds(props){
     return(
-        <button onClick={props.submitCreds}>Login!</button>
+        <button type="button" className='loginButton' className="btn btn-primary btn-lg btn-block"  onClick={props.submitCreds}>
+            Login
+        </button>
     )
 }
 

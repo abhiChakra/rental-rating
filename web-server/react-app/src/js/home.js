@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from './navbar';
 import PlacesAutocomplete from 'react-places-autocomplete'
+import '../css/home.css'
 
 class Home extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            authenticated : false, 
-            currUser : null,
             userMessage : 'Welcome! Login or signup!',
             'address' : '',
             'number' : null,
@@ -20,7 +20,7 @@ class Home extends React.Component {
         }
     }
 
-    componentDidMount(){
+    checkAuthenticated(){
         fetch('http://127.0.0.1:5000/user/is_authenticated', {
                                                             method: 'GET', 
                                                             mode: 'cors',
@@ -32,43 +32,50 @@ class Home extends React.Component {
         ).then(res => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                   this.setState({authenticated : true, currUser : res.username, userMessage : 'Welcome back!'})
+                    this.setState({userMessage: 'Welcome back ' + res.response.username})
                 })
+            } else{
+                return null;
             }
         }).catch((error) => {
             console.log(error)
         })
     }
 
-    logoutAction(event){
-        event.preventDefault();
-        fetch('http://127.0.0.1:5000/logout', {
-                                        method: 'GET',
-                                        mode: 'cors',
-                                        headers : {
-                                            'Accept': 'application/json'
-                                           },
-                                        credentials: 'include'
-                                       }
-        ).then(res => {
-            if(res.status === 200){         
-                this.setState({authenticated : false, userMessage : 'Welcome! Login or signup!'})
-                this.props.history.push('/');
-            } else{
-                (res.json()).then((res) => {
-                    this.setState({userMessage : res.response})
-                })
-            }
-        }).catch((error) => {
-            console.log(error)
-        })
+    componentDidMount(){
+       this.checkAuthenticated();
     }
+
+    // logoutAction(event){
+    //     event.preventDefault();
+    //     fetch('http://127.0.0.1:5000/logout', {
+    //                                     method: 'GET',
+    //                                     mode: 'cors',
+    //                                     headers : {
+    //                                         'Accept': 'application/json'
+    //                                        },
+    //                                     credentials: 'include'
+    //                                    }
+    //     ).then(res => {
+    //         if(res.status === 200){         
+    //             this.setState({authenticated : false, userMessage : 'Welcome! Login or signup!'})
+    //             this.props.history.push('/');
+    //         } else{
+    //             (res.json()).then((res) => {
+    //                 this.setState({userMessage : res.response})
+    //             })
+    //         }
+    //     }).catch((error) => {
+    //         console.log(error)
+    //     })
+    // }
 
     handleChange = address => {
         this.setState({ address });
     };
 
     handleSelect = address => {
+
         let split_address = address.split(',')
         let street_address = split_address[0]
         let split_street_add = street_address.split(' ')
@@ -123,21 +130,18 @@ class Home extends React.Component {
         })
     }
 
+    handleOnOver = address => {
+        this.handleChange(address)
+        document.getElementById('searchInput').value = address
+    }
+
     render(){
         return(
                 <div>
-                    <nav className='nav-wrapper blue darken-3'>
-                        <div className='container'>
-                        <a>
-                            
-                        </a>
-
-                        </div>
-                    </nav>
-                    <p>home page</p> <br/>
-                    <p>{this.state.userMessage}</p><br/>
+                    <Navbar />
+                    {/* <p className='userMessage'>{this.state.userMessage}</p><br/> */}
                     
-                    {this.state.authenticated ? <div> 
+                    {/* {this.state.authenticated ? <div> 
                         <Link to={'/user/profile/'+this.state.currUser}>Go to profile</Link><br/>
                         <LogoutButton authenticated={this.state.authenticated} logoutAction={(event) => this.logoutAction(event)} />
                     </div> : 
@@ -147,35 +151,53 @@ class Home extends React.Component {
                         <Link to='/signup'>Sign up</Link>
                             <br/>
                     </div>
-                    }
+                    } */}
 
                     <h2>Search an address: </h2> <br/>
                     <PlacesAutocomplete
                         value={this.state.address}
                         onChange={this.handleChange}
                         onSelect={this.handleSelect}
-                    >
-                        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-                            <div>
-                                <input  {...getInputProps({
-                                        placeholder: 'Search Places ...',
-                                        className: 'location-search-input',
-                                })} />
-                                <div>
-                                    {loading ? <div>...loading </div> : null}
 
-                                    {suggestions.map((suggestion) => {
-                                        return(
-                                            <div {...getSuggestionItemProps(suggestion)}>
-                                                {suggestion.description}
-                                            </div>
-                                        )
-                                    })}
+                        className='autocomplete'
+                    >
+                    {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                        <div>
+                            <div className='searchBar'>
+                                <div className='searchInput'>
+                                <input 
+                               aria-label = "Recipient's username"
+                               aria-describedby = "basic-addon2"
+                                {...getInputProps({
+                                    placeholder: '24 Sussex Drive, Ottawa, ON, Canada',
+                                    className: 'location-search-input form-control',
+                                    id: 'searchInput',
+                                    type: "text"
+                                })} />
                                 </div>
+                                <div className='homeSearchButton'>
+                                    <button className="btn btn-primary btn-lg" type="button" onClick={(event) => this.handleSubmit(event)}>Search</button> 
+                                </div>
+                                <br/>
+                                <br/>
                             </div>
+                            <br/>
+                            <div className='suggestions'>
+                            {loading ? <div>...loading </div> : null}
+
+                            {suggestions.map((suggestion) => {
+                                return(
+                                    <div onClick={() => this.handleSelect(suggestion.description)}
+                                    onMouseOver={() => this.handleOnOver(suggestion.description)} 
+                                    className='suggestion' {...getSuggestionItemProps(suggestion)}>
+                                        {suggestion.description}
+                                    </div>
+                                )
+                            })}
+                            </div>
+                        </div>
                             )}
                     </PlacesAutocomplete> <br />
-                    <button onClick={(event) => this.handleSubmit(event)}>Submit</button>
 
                     <QueryListings queryListings={this.state.queryRes}/>
 
@@ -198,18 +220,6 @@ function QueryListings(props){
             </div>
         )
     })
-}
-
-function LogoutButton(props){
-    if(props.authenticated){
-        return(
-            <button onClick={props.logoutAction}>Logout</button>
-        )
-    }else{
-        return(
-            null
-        )
-    }
 }
 
 export default Home

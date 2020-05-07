@@ -1,41 +1,42 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from './navbar';
 
 class UserHome extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-                    userMessage : "Default message", 
+                    userMessage : "Default message",
+                    userListings : [],
                     authenticated : false,
-                    userListings : []
-                    }
+                }
     }
 
-    logoutAction(event){
-        event.preventDefault();
-        fetch('http://127.0.0.1:5000/logout', {
-                                        method: 'GET',
-                                        mode: 'cors',
-                                        headers : {
-                                            'Accept': 'application/json'
-                                           },
-                                        credentials: 'include'
-                                       }
-        ).then(res => {
-            if(res.status === 200){
-                (res.json()).then((res) => {
-                    this.setState({authenticated : false, userMessage : res.response})
-                })
-                this.props.history.push('/');
-            } else{
-                (res.json()).then((res) => {
-                    this.setState({userMessage : res.response})
-                })
-            }
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
+    // logoutAction(event){
+    //     event.preventDefault();
+    //     fetch('http://127.0.0.1:5000/logout', {
+    //                                     method: 'GET',
+    //                                     mode: 'cors',
+    //                                     headers : {
+    //                                         'Accept': 'application/json'
+    //                                        },
+    //                                     credentials: 'include'
+    //                                    }
+    //     ).then(res => {
+    //         if(res.status === 200){
+    //             (res.json()).then((res) => {
+    //                 this.setState({authenticated : false, userMessage : res.response})
+    //             })
+    //             this.props.history.push('/');
+    //         } else{
+    //             (res.json()).then((res) => {
+    //                 this.setState({userMessage : res.response})
+    //             })
+    //         }
+    //     }).catch((error) => {
+    //         console.log(error)
+    //     })
+    // }
 
     fetchUserListings(){
         fetch('http://127.0.0.1:5000/get_listings', {
@@ -87,16 +88,39 @@ class UserHome extends React.Component {
             })
     }
 
+
+    checkAuthenticated(){
+        fetch('http://127.0.0.1:5000/user/is_authenticated', {
+                                                            method: 'GET', 
+                                                            mode: 'cors',
+                                                            headers:{
+                                                                'Accept' : 'application/json'
+                                                            },
+                                                            credentials : 'include'
+                                                            }
+        ).then(res => {
+            if(res.status == 200){
+                (res.json()).then(res => {
+                    this.fetchUserListings();
+                    this.fetchUsermessage();
+                })
+            } else{
+                this.props.history.push('/login')
+            }
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
     componentDidMount(){
-        this.fetchUsermessage();
-        this.fetchUserListings();
+       this.checkAuthenticated();
     }
 
     render(){
         return(
             <div>
+                <Navbar />
                 <MessageDisplay userMessage={this.state.userMessage} fetchUsermessage={() => this.fetchUsermessage()}/> <br/>
-                <LogoutButton authenticated={this.state.authenticated} logoutAction={(event) => this.logoutAction(event)} /> <br />
                 <CreateListing authenticated={this.state.authenticated} /> <br />
 
                 <h4>Your listings: </h4>
@@ -125,18 +149,6 @@ function MessageDisplay(props){
     return(
         <p>{props.userMessage}</p>
     )
-}
-
-function LogoutButton(props){
-    if(props.authenticated){
-        return(
-            <button onClick={props.logoutAction}>Logout</button>
-        )
-    }else{
-        return(
-            null
-        )
-    }
 }
 
 function CreateListing(props){

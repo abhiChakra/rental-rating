@@ -1,5 +1,6 @@
 import React from 'react'
 import PlacesAutocomplete from 'react-places-autocomplete'
+import Navbar from './navbar'
 
 class CreateListing extends React.Component{
     constructor(props){
@@ -16,7 +17,7 @@ class CreateListing extends React.Component{
         }
     }
 
-    componentDidMount(){
+    checkAuthenticated(){
         fetch('http://127.0.0.1:5000/user/is_authenticated', {
                                                             method: 'GET', 
                                                             mode: 'cors',
@@ -26,14 +27,20 @@ class CreateListing extends React.Component{
                                                             credentials : 'include'
                                                             }
         ).then(res => {
-            if(res.status != 200){
+            if(res.status == 200){
                 (res.json()).then(res => {
-                    this.props.history.push('/');
+                    this.setState({currUser : res.response.username})
                 })
             } else{
-                this.setState({currUser : res.user.username})
+                this.props.history.push('/')
             }
+        }).catch((error) => {
+            console.log(error)
         })
+    }
+
+    componentDidMount(){
+       this.checkAuthenticated();
     }
 
     handleChange = address => {
@@ -114,6 +121,7 @@ class CreateListing extends React.Component{
     render(){
         return(
             <div>
+                <Navbar />
                 <h2>Create new Listing</h2> <br/>
 
                 <h4>Search your address below:</h4>

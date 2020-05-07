@@ -1,0 +1,46 @@
+.userMessage {
+    padding-top: 10px;
+    padding-left: 10px;
+    size: 0px;
+
+}
+
+h2 {
+    padding-top: 2%;
+    padding-left: 6%;
+    size: 15px;
+    color: #334BFF;
+}
+
+.searchInput {
+    padding: 2%;
+    width : 50%;
+    height: 3%;
+    float: left;
+}
+
+.searchBar{
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    margin-left: 20%;
+    background-color: #8133FF;
+    padding-bottom: 3%;
+}
+
+.homeSearchButton {
+    float: left;
+    padding-top: 1.5%;
+}
+
+.suggestions {
+    margin-left: 22%;
+}
+
+.suggestion {
+    border-bottom: solid 1px;
+}
+
+.suggestion:hover{
+    background-color: gainsboro;
+}

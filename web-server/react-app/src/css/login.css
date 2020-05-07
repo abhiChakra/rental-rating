@@ -1,0 +1,15 @@
+#loginCreds {
+    width: 30%;
+    height: auto;
+    text-align: center;
+    display: inline-block;
+    margin-top: 10%;
+}
+
+.loginContainer {
+    text-align: center;
+}
+
+button {
+    color: #338BFF;
+}

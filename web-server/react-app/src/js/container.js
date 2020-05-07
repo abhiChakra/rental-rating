@@ -7,24 +7,28 @@ import CreateListing from './createListing';
 import Listing from './listing';
 import UserHome from './userHome';
 
+
 class Container extends React.Component {
     constructor(props){
-        super(props)
+        super(props);
     }    
+
     render(){
         return(
                 <BrowserRouter>
-                    <Switch>
+                    <div>
+                        <Switch>
                             <Route path='/' exact render={(props) => <Home {...props} />} />
                             <Route path='/user/profile/:username' exact render={(props) => <UserHome {...props} />} />
                             <Route path='/listing/:id' exact render={(props) => <Listing {...props} /> } />
-                            <Route path='/user/create_listing' exact render={(props) => <CreateListing {...props}/>} />
+                            <Route path='/user/create_listing' exact render={(props) => <CreateListing {...props} />} />
                             <Route path='/login' exact render={(props) => <LoginForm {...props} />}/>
-                            <Route path='/signup' exact render={(props) => <CreateProfile {...props} />}/>
-                    </Switch>
+                            <Route path='/signup' exact render={(props) => <CreateProfile {...props}/>}/>
+                        </Switch>
+                    </div>   
                 </BrowserRouter>
         )
     }
 }
 
-export default Container
+export default Container;

@@ -90,7 +90,7 @@ router.get('/user/is_authenticated', auth, async (req, res) => {
         'username' : req.user.username,
         '_id' : req.user._id
     }
-    res.status(200).send(JSON.stringify(userInfo));
+    res.status(200).send(JSON.stringify({'response' : userInfo}));
 })
 
 

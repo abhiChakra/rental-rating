@@ -1,4 +1,5 @@
 import React from 'react';
+import Navbar from './navbar';
 import { Link } from 'react-router-dom';
 
 
@@ -12,7 +13,7 @@ class CreateProfile extends React.Component {
         }
     }
 
-    componentDidMount(){
+    checkAuthenticated(){
         fetch('http://127.0.0.1:5000/user/is_authenticated', {
                                                             method: 'GET', 
                                                             mode: 'cors',
@@ -24,11 +25,18 @@ class CreateProfile extends React.Component {
         ).then(res => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                    let currFetch = 'user/profile/' + res.username.toString();
-                    this.props.history.push(currFetch);
+                    this.props.history.push('/user/profile/' + res.response.username)
                 })
+            } else{
+                return null;
             }
+        }).catch((error) => {
+            console.log(error)
         })
+    }
+
+    componentDidMount(){
+       this.checkAuthenticated();
     }
 
     updateUsername(event){
@@ -80,8 +88,8 @@ class CreateProfile extends React.Component {
     render(){
         return(
             <div>
-                <Link to='/'>Home</Link>
-
+                {/* <Link to='/'>Home</Link> */}
+                <Navbar />
                 <p>Signup page</p>
 
                 <Email updateEmail={(event) => this.updateEmail(event)} />
