@@ -1,0 +1,28 @@
+.searchInput {
+    padding: 2%;
+    width : 50%;
+    height: 3%;
+    float: left;
+}
+
+.searchBar{
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    margin-left: 20%;
+    background-color: #8133FF;
+    padding-bottom: 3%;
+}
+
+.suggestions {
+    margin-left: 22%;
+}
+
+.suggestion {
+    border-bottom: solid 1px;
+}
+
+.suggestion:hover{
+    background-color: gainsboro;
+}
+

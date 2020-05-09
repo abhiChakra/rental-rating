@@ -47,6 +47,11 @@ class CreateListing extends React.Component{
         this.setState({ address });
     };
 
+    handleOnOver = address => {
+        this.handleChange(address)
+        document.getElementById('searchInput').value = address
+    }
+
     handleSelect = address => {
         console.log(address)
 
@@ -124,8 +129,54 @@ class CreateListing extends React.Component{
                 <Navbar />
                 <h2>Create new Listing</h2> <br/>
 
-                <h4>Search your address below:</h4>
-                <PlacesAutocomplete
+
+                <h4>Search an address: </h4> <br/>
+                    <PlacesAutocomplete
+                        value={this.state.address}
+                        onChange={this.handleChange}
+                        onSelect={this.handleSelect}
+
+                        className='autocomplete'
+                    >
+                    {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                        <div>
+                            <div className='searchBar'>
+                                <div className='searchInput'>
+                                <input 
+                               aria-label = "Recipient's username"
+                               aria-describedby = "basic-addon2"
+                                {...getInputProps({
+                                    placeholder: '24 Sussex Drive, Ottawa, ON, Canada',
+                                    className: 'location-search-input form-control',
+                                    id: 'searchInput',
+                                    type: "text"
+                                })} />
+                                </div>
+                                <div className='homeSearchButton'>
+                                    <button className="btn btn-primary btn-lg" type="button" onClick={(event) => this.handleSubmit(event)}>Search</button> 
+                                </div>
+                                <br/>
+                                <br/>
+                            </div>
+                            <br/>
+                            <div className='suggestions'>
+                            {loading ? <div>...loading </div> : null}
+
+                            {suggestions.map((suggestion) => {
+                                return(
+                                    <div onClick={() => this.handleSelect(suggestion.description)}
+                                    onMouseOver={() => this.handleOnOver(suggestion.description)} 
+                                    className='suggestion' {...getSuggestionItemProps(suggestion)}>
+                                        {suggestion.description}
+                                    </div>
+                                )
+                            })}
+                            </div>
+                        </div>
+                            )}
+                    </PlacesAutocomplete> <br />
+
+                {/* <PlacesAutocomplete
                     value={this.state.address}
                     onChange={this.handleChange}
                     onSelect={this.handleSelect}
@@ -150,7 +201,7 @@ class CreateListing extends React.Component{
                         </div>
                     </div>
                 )}
-                </PlacesAutocomplete>
+                </PlacesAutocomplete> */}
 
                 <Number /> <br/>
                 <Street /> <br/>

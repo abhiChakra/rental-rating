@@ -1,0 +1,48 @@
+.userMessage{
+    color: white;
+    background-color: #FB6A59;
+    size: 25px;
+    padding: 2%;
+}
+
+.createListing{
+    background-color: #5990FB;
+    color: white;
+    margin-left: 6%;
+    margin-top: 3%;
+    size: 30px;
+    padding: 2%;
+}
+
+.createListing:hover{
+    opacity: 0.8;
+}
+
+.queryItem {
+    border-radius: 10px;
+    width: 58%;
+    height: 2%;
+    padding: 1%;
+    margin-left: 6%;
+    text-align: center;
+}
+
+.addressLink:hover{
+    color: white;
+    opacity: 0.8;
+    transition: 0.2s;
+}
+
+.addressLink{
+    padding: 2%;
+    size: 30px;
+    color: white;
+    border-radius: 10px;
+    background-color: #FB6A59;
+}
+
+.yourListings{
+    color: #8133FF;
+    margin-left: 8%;
+    margin-top: 5%;
+}

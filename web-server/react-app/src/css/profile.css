@@ -1,4 +1,4 @@
-#loginCreds {
+#signupCreds {
     width: 30%;
     height: auto;
     text-align: center;
@@ -6,15 +6,15 @@
     margin-top: 10%;
 }
 
-.loginContainer {
+.signupContainer {
     text-align: center;
 }
 
-.loginButton {
+.signupButton{
     color: #338BFF;
 }
 
-.loginMessage{
+.signupMessage{
     color: red;
     size: 15px;
 }

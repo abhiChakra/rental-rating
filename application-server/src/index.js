@@ -2,6 +2,7 @@ const express = require('express')
 require('./db/mongoose')
 const userRouter = require('./routes/user_routes')
 const listingRouter = require('./routes/listing_routes')
+const reviewRouter = require('./routes/review_routes')
 const cookieParser = require('cookie-parser')
 
 const app = express()
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 app.use(cookieParser())
 app.use(userRouter)
 app.use(listingRouter)
+app.use(reviewRouter)
 
 
 

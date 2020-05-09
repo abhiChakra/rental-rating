@@ -37,6 +37,12 @@ userSchema.virtual('listings', {
     foreignField: 'contributor'
 })
 
+userSchema.virtual('reviews', {
+    ref: 'Review', 
+    localField: 'username',
+    foreignField: 'contributor'
+})
+
 userSchema.methods.generateToken = async function(){
 
     const currUser = this

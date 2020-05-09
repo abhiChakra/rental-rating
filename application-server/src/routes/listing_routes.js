@@ -1,21 +1,22 @@
 const express = require('express')
 const auth = require('../middleware/auth')
 const Listing = require('../models/listing')
+const Review = require('../models/review')
 
 const router = express.Router()
 
 router.post('/create_listing', auth, async (req, res) => {
-
-    const listing = new Listing({
-        ...req.body,
-        contributor: req.user.username
-    })
-
     try{
+        const listing = new Listing({
+            ...req.body,
+            contributor: req.user.username
+        })
+    
         await listing.save()
         res.status(200).send(JSON.stringify({'response' : 'Added new listing!'}))
+
     } catch (e) {
-        res.status(404).send(JSON.stringify({'response' : 'Error creating listing.'}))
+        res.status(404).send(JSON.stringify({'response' : 'Error saving form. Please recheck your input address.'}))
     }
 })
 
@@ -24,7 +25,7 @@ router.get('/get_listings', auth, async (req, res) => {
         const foundListing = await Listing.find({ contributor : req.user.username})
         if(foundListing){
             res.status(200).send(JSON.stringify({'response' : foundListing}))
-        } else{
+        } else {
             res.status(500).send(JSON.stringify({'response':'There are no listings'}))
         }
     } catch (e){
@@ -69,17 +70,20 @@ router.get('/get_listing/:id', async (req, res) => {
             res.status(200).send(JSON.stringify({"response" : foundListing}))
         }
     } catch (error){
-        console.log(error)
+        res.status(500).send(JSON.stringify({'response' : "Error fetching reviews for this listing"}))
     }
 
 })
 
-router.delete('/delete_listing', auth, async (req, res) => {
+router.delete('/delete_listing/:listingID', auth, async (req, res) => {
 
-    let listingDeleteId = req.body.taskID;
+    let listingDeleteID = req.params.listingID;
 
     try{
-        const foundListing = await Listing.deleteOne({ _id : taskDeleteId})
+
+        await Review.deleteMany({ listing : listingDeleteID })
+
+        const foundListing = await Listing.deleteOne({ _id : listingDeleteID})
         
         if(foundListing){
             res.status(200).send(JSON.stringify({'response' : 'Deleted successfully'}))

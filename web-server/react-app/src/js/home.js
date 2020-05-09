@@ -139,21 +139,7 @@ class Home extends React.Component {
         return(
                 <div>
                     <Navbar />
-                    {/* <p className='userMessage'>{this.state.userMessage}</p><br/> */}
-                    
-                    {/* {this.state.authenticated ? <div> 
-                        <Link to={'/user/profile/'+this.state.currUser}>Go to profile</Link><br/>
-                        <LogoutButton authenticated={this.state.authenticated} logoutAction={(event) => this.logoutAction(event)} />
-                    </div> : 
-                    <div> 
-                        <Link to='/login'>Login</Link> 
-                            <br/>
-                        <Link to='/signup'>Sign up</Link>
-                            <br/>
-                    </div>
-                    } */}
 
-                    <h2>Search an address: </h2> <br/>
                     <PlacesAutocomplete
                         value={this.state.address}
                         onChange={this.handleChange}
@@ -163,6 +149,10 @@ class Home extends React.Component {
                     >
                     {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
                         <div>
+                            <div className='titleBar'>
+                                <h2>Search Your Rental </h2>
+                            </div>
+                            <br/>
                             <div className='searchBar'>
                                 <div className='searchInput'>
                                 <input 
@@ -211,8 +201,8 @@ function QueryListings(props){
     return props.queryListings.map(listing => {
         let pathname = '/listing/' + listing._id 
         return(
-            <div> 
-               <Link to={{
+            <div className='queryItem'>
+               <Link className='addressLink' to={{
                    pathname: pathname
                }}>Address: {listing.number} {listing.street}, 
                {listing.city}, {listing.province}, {listing.country}</Link>

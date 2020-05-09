@@ -128,7 +128,7 @@ function SubmitCreds(props){
 
 function Message(props){
     return(
-        <p>{props.message}</p>
+        <p className='loginMessage'>{props.message}</p>
     )
 }
 

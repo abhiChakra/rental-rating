@@ -12,24 +12,26 @@ router.get('/', (req, res) => {
 
 // login
 router.post('/login', async (req, res) => {
+
     let input_username = req.body.username
     let input_password = req.body.password
 
     try {
       authenticated_user = await User.authenticateUser(input_username, input_password)
 
-      tokenDetails = await authenticated_user.generateToken()
+        tokenDetails = await authenticated_user.generateToken()
 
-      res.cookie('token', tokenDetails[1], {httpOnly : true})
+        res.cookie('token', tokenDetails[1], {httpOnly : true})
+  
+        userCreds = {
+            "username" : authenticated_user.username,
+            "_id" : authenticated_user._id
+        }
+  
+        res.status(200).send(JSON.stringify(userCreds));
 
-      userCreds = {
-          "username" : authenticated_user.username,
-          "_id" : authenticated_user._id
-      }
-
-      res.status(200).send(JSON.stringify(userCreds));
     } catch(e){
-        res.status(500).send(e)
+        res.status(500).send(JSON.stringify({'response': 'Incorrect credentials'}))
     }
 })
 
@@ -47,6 +49,7 @@ router.post('/create_user', async (req, res) => {
 
     try{
         const newCreatedUser = await newUser.save()
+
         let tokenDetails = await newCreatedUser.generateToken()
 
         res.cookie('token', tokenDetails[1], {httpOnly : true})
@@ -57,7 +60,7 @@ router.post('/create_user', async (req, res) => {
         }
         res.status(200).send(JSON.stringify(userCreds))
     }catch(e){
-        res.status(500).send(e)
+        res.status(500).send({'response' : e})
     }
 })
 

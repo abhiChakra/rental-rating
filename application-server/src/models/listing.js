@@ -28,6 +28,12 @@ const listingSchema = mongoose.Schema({
     }
 })
 
+listingSchema.virtual('reviews', {
+    ref: 'Review',
+    localField: '_id', 
+    foreignField: 'listing'
+})
+
 const listingModel = mongoose.model('Listing', listingSchema)
 
 module.exports = listingModel

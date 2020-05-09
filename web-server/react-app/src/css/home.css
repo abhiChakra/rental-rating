@@ -5,11 +5,15 @@
 
 }
 
+.titleBar {
+    text-align: center;
+} 
+
+
 h2 {
     padding-top: 2%;
-    padding-left: 6%;
-    size: 15px;
-    color: #334BFF;
+    size: 22px;
+    color: #FB6A59;
 }
 
 .searchInput {
@@ -17,13 +21,12 @@ h2 {
     width : 50%;
     height: 3%;
     float: left;
+    margin-left: 20%;
 }
 
 .searchBar{
-    border-radius: 10px;
     text-align: center;
     width: 100%;
-    margin-left: 20%;
     background-color: #8133FF;
     padding-bottom: 3%;
 }
@@ -44,3 +47,28 @@ h2 {
 .suggestion:hover{
     background-color: gainsboro;
 }
+
+.queryItem {
+    border-radius: 10px;
+    width: 40%;
+    height: 3%;
+    padding: 1%;
+    margin-left: 30%;
+    margin-right: 30%;
+    text-align: center;
+}
+
+.addressLink:hover{
+    color: white;
+    opacity: 0.8;
+    transition: 0.5s;
+}
+
+.addressLink{
+    padding: 4%;
+    size: 30px;
+    color: white;
+    border-radius: 10px;
+    background-color: #FB6A59;
+}
+
