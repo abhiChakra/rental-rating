@@ -1,0 +1,33 @@
+.createReviewHeader{
+    color: #338BFF;
+    margin-left: 4%;
+    margin-top: 2%;
+}
+
+.createListingInputDiv{
+    padding: 2%;
+
+}
+
+.inputDes{
+    color: white;
+    size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.createReviewFormDiv{
+    margin-left: 4%;
+    margin-top: 2%;
+    background-color: #3984D6 ;
+    border-radius: 10px;
+    width: 50%;
+    padding: 2%;
+}
+
+.createReviewMessage{
+    margin-left: 4%;
+    color: red;
+    size: 16px;
+    text-align: center;
+    padding: 1%;
+}

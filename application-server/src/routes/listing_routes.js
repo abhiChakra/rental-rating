@@ -80,7 +80,7 @@ router.get('/get_listing/:id', async (req, res) => {
             res.status(200).send(JSON.stringify({"response" : foundListing}))
         }
     } catch (error){
-        res.status(500).send(JSON.stringify({'response' : "Error fetching reviews for this listing"}))
+        res.status(500).send(JSON.stringify({'response' : "Error fetching details for this listing"}))
     }
 
 })
@@ -90,12 +90,13 @@ router.delete('/delete_listing/:listingID', auth, async (req, res) => {
     let listingDeleteID = req.params.listingID;
 
     try{
+        const findListing = await Listing.findOne({ _id : listingDeleteID, contributor : req.user.username})
 
-        await Review.deleteMany({ listing : listingDeleteID })
+        await Review.deleteMany({ listing : findListing._id })
 
-        const foundListing = await Listing.deleteOne({ _id : listingDeleteID})
+        const deletedListing = await Listing.deleteOne({ _id : findListing._id})
         
-        if(foundListing){
+        if(deletedListing){
             res.status(200).send(JSON.stringify({'response' : 'Deleted successfully'}))
         } else{
             res.status(500).send(JSON.stringify({'reponse' : 'Could not delete listing'}))

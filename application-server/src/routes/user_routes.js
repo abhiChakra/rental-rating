@@ -3,6 +3,8 @@ const router = express.Router()
 const auth = require('../middleware/auth')
 
 const User = require('../models/user')
+const Listing = require('../models/listing')
+const Review = require('../models/review')
 
 
 router.get('/', (req, res) => {
@@ -84,7 +86,8 @@ router.get('/logout', auth, async (req, res) => {
 
         res.status(200).send(JSON.stringify({"response":"Logged out successfully!"}))
     } catch(e){
-        res.status(500).send(e)
+        console.log(e);
+        res.status(500).send(JSON.stringify({'response' : 'Error while logging out!'}))
     }
 })
 
@@ -96,43 +99,21 @@ router.get('/user/is_authenticated', auth, async (req, res) => {
     res.status(200).send(JSON.stringify({'response' : userInfo}));
 })
 
-
-router.get('/user/profile/:username', auth, async (req, res) => {
-    res.send(JSON.stringify({"response":"Welcome to your homepage " + req.user.username.toString()}))
-})
-
-
-// fetching all users
-router.get('/users', async (req, res) => {
+router.delete('/user/delete_user', auth, async (req, res) => {
     try{
-        let found_users = await User.find({})
-        res.status(200).send(found_users)
-    }catch(e){
-        res.status(500).send(e)
-    }
-})
+        await Review.deleteMany({contributor : req.user.username})
+        await Listing.deleteMany({contributor : req.user.username})
 
-// updating a username
-router.patch('/update_user', async (req, res) => {
+        const deletedUser = await User.deleteOne({_id: req.user._id})
 
-    username_lookup = req.body.username;
-
-    username_password = req.body.password;
-
-    try{
-        const foundUser = await User.findOne({username: username_lookup})
-        
-        if(!foundUser){
-            res.status(400).send("Could not find such a user")
+        if(deletedUser){
+            res.status(200).send(JSON.stringify({'response' : 'Deleted user successfully'}))
+        } else{
+            res.status(404).send(JSON.stringify({'response' : 'Could not delete user'}))
         }
-
-        foundUser.password = username_password;
-
-        await foundUser.save()
-
-        res.status(200).send(foundUser)
-    } catch(e){
-        res.status(500).send(e)
+    } catch(error){
+        console.log(error)
+        res.status(404).send(JSON.stringify({'response' : 'Error while deleting user'}))
     }
 })
 

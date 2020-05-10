@@ -1,6 +1,8 @@
 import React from 'react'
 import Navbar from './navbar';
 import '../css/listing.css'
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class Listing extends React.Component{
     constructor(props){
@@ -22,6 +24,8 @@ class Listing extends React.Component{
     }
 
     fetchListingReviews(listingID){
+        this.setState({userReviews : []})
+
         let currFetch = 'http://127.0.0.1:5000/' + listingID + '/' + 'get_reviews';
 
         fetch(currFetch, {
@@ -128,26 +132,41 @@ class Listing extends React.Component{
         console.log("deleting listing")
         event.preventDefault();
 
-        const  { id } = this.props.match.params;
+        confirmAlert({
+            title: 'Confirm listing delete',
+            message: 'Are you sure you want to delete this listing? Deleting will also remove all listing reviews.',
+            buttons: [
+              {
+                label: 'Yes',
+                onClick: () => {
+                    const  { id } = this.props.match.params;
 
-        let currFetch = 'http://127.0.0.1:5000/delete_listing/' + id;
-        fetch(currFetch,                            {
-                                                        method: 'DELETE',
-                                                        mode: 'cors',
-                                                        headers: {
-                                                            'Accept' : 'application/json'
-                                                        },
-                                                        credentials: 'include'        
-                                                    }
-        ).then(res => {
-            if(res.status == 200){
-                this.props.history.push('/user/profile/' + this.state.currUser)
-            } else{
-                alert('Error deleting listing')
-            }
-        }).catch((error) => {
-            console.log(error)
-        })
+                    let currFetch = 'http://127.0.0.1:5000/delete_listing/' + id;
+                    fetch(currFetch,                            {
+                                                                    method: 'DELETE',
+                                                                    mode: 'cors',
+                                                                    headers: {
+                                                                        'Accept' : 'application/json'
+                                                                    },
+                                                                    credentials: 'include'        
+                                                                }
+                    ).then(res => {
+                        if(res.status == 200){
+                            this.props.history.push('/user/profile/' + this.state.currUser)
+                        } else{
+                            alert('Error deleting listing')
+                        }
+                    }).catch((error) => {
+                        console.log(error)
+                    })
+                }
+              },
+              {
+                label: 'No',
+                onClick: () => {}
+              }
+            ]
+          });
     }
 
     updateReview(reviewID){
@@ -211,8 +230,8 @@ class Listing extends React.Component{
                     <OtherReviews 
                     otherReviews={this.state.otherReviews}/>
                 </div>
-
-                <p>{this.state.message}</p>
+                <br/>
+                <br />
             </div>
         )
     }

@@ -24,6 +24,7 @@
     height: 2%;
     padding: 1%;
     margin-left: 6%;
+    margin-top:1%;
     text-align: center;
 }
 
@@ -45,4 +46,15 @@
     color: #8133FF;
     margin-left: 8%;
     margin-top: 5%;
+}
+
+
+.noListing{
+    margin-left: 5%;
+    margin-top: 3%;
+}
+
+.deleteUserButton{
+    margin-left: 5%;
+    margin-top: 1%;
 }

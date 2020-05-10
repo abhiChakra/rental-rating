@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from './navbar';
+import '../css/updateReview.css';
 
 class UpdateReview extends React.Component {
     constructor(props){
@@ -14,7 +15,7 @@ class UpdateReview extends React.Component {
             locationRating: null,
             reviewTitle: null,
             reviewComments: null,
-            message: ''
+            createReviewMessage: ''
         }
     }
 
@@ -49,7 +50,7 @@ class UpdateReview extends React.Component {
                     })
             }else{
                 (res.json()).then(res => {
-                    console.log(res.response)
+                    this.setState({createReviewMessage : res.response})
                 })
             }
             
@@ -68,11 +69,17 @@ class UpdateReview extends React.Component {
                             credentials: 'include'
                         }
         ).then(res => {
-            (res.json()).then(res => {
-                this.setState({ listingAddress : res.response.number + ' ' + res.response.street + 
-                                                ', ' + res.response.city + ', ' + res.response.province +
-                                            res.response.country})
-            })
+            if(res.status == 200){
+                (res.json()).then(res => {
+                    this.setState({ listingAddress : res.response.number + ' ' + res.response.street + 
+                                                    ', ' + res.response.city + ', ' + res.response.province + ', ' +
+                                                res.response.country})
+                })
+            } else{
+                (res.json()).then(res => {
+                    this.setState({createReviewMessage : res.response})
+                })
+            }
         }).catch(e => {
             console.log(e)
         })
@@ -133,8 +140,7 @@ class UpdateReview extends React.Component {
                this.props.history.push('/listing/' + this.state.listingID)
            } else{
                (res.json()).then(res => {
-                    console.log(res.response)
-                    this.setState({message : res.response})
+                    this.setState({createReviewMessage : res.response})
                })
            }
         }).catch(e => {
@@ -146,16 +152,18 @@ class UpdateReview extends React.Component {
         return(
             <div>
                 <Navbar />
-                <h5>Update your review for {this.state.listingAddress}</h5>
-                <RatingTitle handleReviewTitle={(event) => this.handleReviewTitle(event)}/>
-                <Overall handleOverallRating={(event) => this.handleOverallRating(event)}/>
-                <BugRating handleBugRating={(event) => this.handleBugRating(event)} />
-                <AdminRating handleAdminRating={(event)=>this.handleAdminRating(event)}/>
-                <LocationRating handleLocationRating={(event) => this.handleLocationRating(event)}/>
-                <Comments handleReviewComments={(event)=>{this.handleReviewComments(event)}}/>
-                <SubmitReview handleReviewSubmit={(event) => {this.handleReviewSubmit(event)}}/>
-
-                <p>{this.state.message}</p>
+                <h4 className='createReviewHeader'>Update your review for {this.state.listingAddress}</h4>
+                <div className='createReviewFormDiv'>
+                    <RatingTitle handleReviewTitle={(event) => this.handleReviewTitle(event)}/>
+                    <Overall handleOverallRating={(event) => this.handleOverallRating(event)}/>
+                    <BugRating handleBugRating={(event) => this.handleBugRating(event)} />
+                    <AdminRating handleAdminRating={(event)=>this.handleAdminRating(event)}/>
+                    <LocationRating handleLocationRating={(event) => this.handleLocationRating(event)}/>
+                    <Comments handleReviewComments={(event)=>{this.handleReviewComments(event)}}/>
+                    <SubmitReview handleReviewSubmit={(event) => {this.handleReviewSubmit(event)}}/>
+                    <Message createReviewMessage={this.state.createReviewMessage}/>
+                    <br/>
+                </div>
             </div>
         )
     }
@@ -163,54 +171,54 @@ class UpdateReview extends React.Component {
 
 function Overall(props){
     return(
-        <div>
+        <div className='createListingInputDiv'>
             <p>Overall rating out of 5 where 5 is fantastic and 1 is abysmal</p>
-            <input id='overallRatingInput' type='text' onChange={props.handleOverallRating} placeholder='rating'></input>
+            <input className="form-control createListingInput" id='overallRatingInput' type='text' onChange={props.handleOverallRating} placeholder='rating'></input>
         </div>
     )
 }
 
 function BugRating(props){
     return(
-        <div>
-            <p>Bug rating out of 5, where 5 is absolutely no bug problems and 1 is infested.</p>
-            <input id='bugRating' type='text' onChange={props.handleBugRating} placeholder='rating'></input>
+        <div className='createListingInputDiv'>
+            <p className='inputDes'>Bug rating out of 5, where 5 is absolutely no bug problems and 1 is infested.</p>
+            <input className="form-control createListingInput" id='bugRating' type='text' onChange={props.handleBugRating} placeholder='rating'></input>
         </div>
     )
 }
 
 function AdminRating(props){
     return(
-        <div>
-            <p>Building admin/landlord/subletter rating out of 5, where 5 is fantastic and 1 is awful.</p>
-            <input id='adminRating' type='text' onChange={props.handleAdminRating} placeholder='rating'></input>
+        <div className='createListingInputDiv'>
+            <p className='inputDes'>Building admin/landlord/subletter rating out of 5, where 5 is fantastic and 1 is awful.</p>
+            <input className="form-control createListingInput" id='adminRating' type='text' onChange={props.handleAdminRating} placeholder='rating'></input>
         </div>
     )
 }
 
 function LocationRating(props){
     return(
-        <div>
-            <p>Building location/transit rating out of 5, where 5 is fantastic and 1 is awful.</p>
-            <input id='locationRating' type='text' onChange={props.handleLocationRating} placeholder='rating'></input>
+        <div className='createListingInputDiv'>
+            <p className='inputDes'>Building location/transit rating out of 5, where 5 is fantastic and 1 is awful.</p>
+            <input className="form-control createListingInput" id='locationRating' type='text' onChange={props.handleLocationRating} placeholder='rating'></input>
         </div>
     )
 }
 
 function RatingTitle(props){
     return(
-        <div>
-            <p>Title (main point) of your review.</p>
-            <input id='reviewTitle' type='text' onChange={props.handleReviewTitle} placeholder='An awesome rent.../An awful rent...'></input>
+        <div className='createListingInputDiv'>
+            <p className='inputDes'>Title (main point) of your review.</p>
+            <input className="form-control createListingInput" id='reviewTitle' type='text' onChange={props.handleReviewTitle} placeholder='An awesome rent.../An awful rent...'></input>
         </div>
     )
 }
 
 function Comments(props){
     return(
-        <div>
-            <p>Other comments about this building which may be helpful for others.</p>
-            <input id='reviewComments' type='text' onChange={props.handleReviewComments} placeholder='The rentl could improve on...'></input>
+        <div className='createListingInputDiv'>
+            <p className='inputDes'>Other comments about this building which may be helpful for others.</p>
+            <input className="form-control createListingInput" id='reviewComments' type='text' onChange={props.handleReviewComments} placeholder='The rentl could improve on...'></input>
         </div>
     )
 }
@@ -218,7 +226,15 @@ function Comments(props){
 function SubmitReview(props){
     return(
         <div>
-            <button onClick={props.handleReviewSubmit}>Save Review</button>
+            <button class="btn btn-success btn-lg btn-block" onClick={props.handleReviewSubmit}>Save Review</button>
+        </div>
+    )
+}
+
+function Message(props){
+    return(
+        <div className='createReviewMessage'>
+            {props.createReviewMessage}
         </div>
     )
 }

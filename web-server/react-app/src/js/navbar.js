@@ -1,6 +1,8 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import '../css/navbar.css'
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class Navbar extends React.Component {
     constructor(props){
@@ -26,7 +28,7 @@ class Navbar extends React.Component {
                     this.setState({authenticated : true, currUser : res.response.username})
                 })
             } else{
-                return null;
+                this.setState({authenticated : false, currUser : null})
             }
         }).catch((error) => {
             console.log(error)
@@ -39,7 +41,15 @@ class Navbar extends React.Component {
 
     logoutAction(event){
         event.preventDefault();
-        fetch('http://127.0.0.1:5000/logout', {
+
+        confirmAlert({
+            title: 'Logout',
+            message: 'Are you sure you want to logout?',
+            buttons: [
+              {
+                label: 'Yes',
+                onClick: () => {
+                    fetch('http://127.0.0.1:5000/logout', {
                                         method: 'GET',
                                         mode: 'cors',
                                         headers : {
@@ -47,14 +57,22 @@ class Navbar extends React.Component {
                                            },
                                         credentials: 'include'
                                        }
-        ).then(res => {
-            if(res.status === 200){         
-                this.setState({authenticated : false, currUser : null})
-                this.props.history.push('/login');
-            }
-        }).catch((error) => {
-            console.log(error)
-        })
+                        ).then(res => {
+                            if(res.status === 200){         
+                                this.setState({authenticated : false, currUser : null})
+                                this.props.history.push('/login');
+                            }
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                }
+              },
+              {
+                label: 'No',
+                onClick: () => {}
+              }
+            ]
+          });
     }
 
     render(){

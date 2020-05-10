@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './navbar';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import '../css/userHome.css'
 
 class UserHome extends React.Component {
@@ -13,26 +15,6 @@ class UserHome extends React.Component {
                     userListings : [],
                     authenticated : false,
                 }
-    }
-
-    fetchUserReviews(){
-        fetch('http://127.0.0.1:5000/get_reviews', {
-                                                    method: 'GET',
-                                                    mode: 'cors',
-                                                    headers: {
-                                                        'Accept' : 'application/json'
-                                                    },
-                                                    credentials: 'include'
-                                                    }
-        ).then(res => {
-            if(res.status == 200){
-
-            } else{
-
-            }
-        }).catch(error => {
-            console.log(error)
-        })
     }
 
     fetchUserListings(){
@@ -51,12 +33,52 @@ class UserHome extends React.Component {
                 })
             } else{
                 (res.json()).then(res => {
-                    this.setState({userMessage : res.response})
+                   console.log(res.response)
                 })
             }
         }).catch((error) => {
             console.log(error)
         })
+    }
+
+    deleteUserProfile(event){
+        event.preventDefault();
+
+        confirmAlert({
+            title: 'Confirm to delete',
+            message: 'Are you sure you want to delete your profile? This will delete all your listings and reviews. ',
+            buttons: [
+              {
+                label: 'Yes',
+                onClick: () => {
+                    fetch('http://127.0.0.1:5000/user/delete_user', {
+                                                                    method: 'DELETE',
+                                                                    mode: 'cors',
+                                                                    headers:{
+                                                                        'Accept' : 'application/json'
+                                                                    },
+                                                                    credentials : 'include'
+                                                                    }
+                        ).then(res => {
+                                if(res.status == 200){
+                                    this.props.history.push('/');
+                                } else{
+                                    (res.json()).then(res => {
+                                        alert('Could not delete profile')
+                                        console.log(res.response)
+                                    })
+                                }
+                        }).catch(error => {
+                            console.log(error)
+                        })
+                }
+              },
+              {
+                label: 'No',
+                onClick: () => {}
+              }
+            ]
+          });
     }
 
     componentDidMount(){
@@ -86,11 +108,14 @@ class UserHome extends React.Component {
         return(
             <div>
                 <Navbar />
-                <MessageDisplay userMessage={this.state.userMessage} fetchUsermessage={() => this.fetchUsermessage()}/> <br/>
+                <MessageDisplay userMessage={this.state.userMessage}/> <br/>
                 <CreateListing authenticated={this.state.authenticated} /> 
                 <br />
                 <h4 className='yourListings'>Your listings: </h4>
                 <UserListings userListings={this.state.userListings}/>
+                <br/>
+                <br/>
+                <DeleteUser deleteUserProfile={(event) => {this.deleteUserProfile(event)}}/>
             </div>
         )
     }
@@ -141,6 +166,12 @@ function CreateListing(props){
             null
         )
     }
+}
+
+function DeleteUser(props){
+    return(
+        <button type="button" className="btn btn-danger btn-lg deleteUserButton" onClick={props.deleteUserProfile}>- Delete User Profile</button>
+    )
 }
 
 export default UserHome;
