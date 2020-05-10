@@ -1,0 +1,81 @@
+.listingHeader{
+    color: #338BFF;
+    margin-left: 4%;
+    margin-top: 2%;
+}
+
+.yourReview{
+    margin-left: 6%;
+    color: #3992D6;
+}
+
+.otherReviews{
+    margin-left: 6%;
+    color: #3992D6;
+}
+
+.contributor {
+    color: grey;
+    margin-left: 4%;
+}
+
+.listingReviewsTitle{
+    margin-left: 2%;
+    margin-bottom: 1%;
+    color: #FB6A59;
+}
+
+.listingReview{
+    padding: 0.5%;
+    margin: 2%;
+    border: 2px #694BFA solid;
+    border-radius: 10px;
+}
+
+.reviewTitle{
+    color: #694BFA;
+    size: 30px;
+}
+
+.reviewSpecs{
+    padding: 1%;
+    background-color: #009DFF;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+.reviewCommentsDiv{
+    padding: 1%;
+    background-color: #D8DEE2;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.reviewComments{
+    font-size: 15px;
+}
+
+.deleteReviewButton{
+    margin: 0.5%;
+}
+
+.updateReviewButton{
+    margin: 0.5%;
+}
+
+.addReviewDiv{
+    margin-left: 6%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.noOtherReviews{
+    margin-left: 4%;
+    color: grey;
+    size: 15px;
+}
+
+.deleteListingButton{
+    margin-left: 4%;
+}

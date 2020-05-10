@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from './navbar';
+import '../css/listing.css'
 
 class Listing extends React.Component{
     constructor(props){
@@ -13,6 +14,8 @@ class Listing extends React.Component{
             country: null,
             contributor : null,
             reviews: [],
+            userReviews: [],
+            otherReviews: [],
             authenticated: false,
             currUser: null
         }
@@ -31,7 +34,25 @@ class Listing extends React.Component{
         ).then(res => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                    this.setState({reviews : res.response})
+                    this.setState({reviews : res.response}, function() {
+                        console.log("inside")
+                        console.log(this.state.reviews)
+                        let userReviews = []
+                        let otherReviews = []
+                        this.state.reviews.map(review => {
+                            if(this.state.authenticated){
+                                if(review.contributor == this.state.currUser){
+                                    userReviews.push(review)
+                                } else{
+                                   otherReviews.push(review)
+                                }
+                            } else{
+                                otherReviews.push(review)
+                            }
+                        })
+
+                        this.setState({ userReviews : userReviews, otherReviews : otherReviews})
+                    })
                 })
             } else{
                 (res.json()).then(res => {
@@ -58,23 +79,22 @@ class Listing extends React.Component{
             if(res.status == 200){
                 (res.json()).then(res => {
                     console.log(res.response._id)
-                    this.setState({address : res.response.number + ' ' + res.response.street, city : res.response.city, province : res.response.province,
-                    country : res.response.country, contributor : res.response.contributor, listingID : res.response._id})
+                    this.setState({address : res.response.number + ' ' + res.response.street, city : res.response.city, province : res.response.province, 
+                    country : res.response.country, contributor : res.response.contributor, listingID : res.response._id}, function() {this.checkAuthenticated()})
                 })
             } else{
                 (res.json()).then(res => {
-                    this.setState({message : res.response})
+                    this.setState({message : res.response}, function() {this.checkAuthenticated()})
                 })
             }
         }).catch(error => {
             console.log(error)
         })
-
-        this.fetchListingReviews(id);
-        this.checkAuthenticated();
     }
 
     checkAuthenticated(){
+        const  { id } = this.props.match.params;
+
         fetch('http://127.0.0.1:5000/user/is_authenticated', {
                                                             method: 'GET', 
                                                             mode: 'cors',
@@ -86,10 +106,12 @@ class Listing extends React.Component{
         ).then(res => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                    this.setState({ authenticated: true, currUser: res.response.username, addReviewLink : '/' + this.state.listingID + '/add_review'})
+                    this.setState({ authenticated: true, currUser: res.response.username, addReviewLink : '/' + this.state.listingID + '/add_review'}, 
+                    function() {this.fetchListingReviews(id)})
                 })
             } else{
-                    this.setState({ authenticated: false, currUser: null, addReviewLink : '/login'})
+                    this.setState({ authenticated: false, currUser: null, addReviewLink : '/login'}, 
+                    function() {this.fetchListingReviews(id)})
             }
         }).catch((error) => {
             console.log(error)
@@ -128,6 +150,12 @@ class Listing extends React.Component{
         })
     }
 
+    updateReview(reviewID){
+        const  listingID = this.props.match.params.id;
+
+        this.props.history.push('/' + reviewID + '/' + listingID +'/update_review');
+    }
+
     deleteReview(reviewID){
         const  { id } = this.props.match.params;
 
@@ -156,43 +184,32 @@ class Listing extends React.Component{
         return(
             <div>
                 <Navbar />
-                <h2 className='listingHeader'>{this.state.address} + {this.state.city} + 
-                {this.state.province} + {this.state.country}</h2>
-                <br/>
+                <h2 className='listingHeader'>{this.state.address}, {this.state.city},  
+                {this.state.province}, {this.state.country}</h2>
                 <p className='contributor'>Contributor: {this.state.contributor}</p>
-                <br/>
                 <div>
                     {(this.state.authenticated && this.state.contributor == this.state.currUser) ? 
-                    <button onClick={(event) => this.deleteListing(event)}>Delete Listing</button>
+                    <button type="button" className='btn btn-danger btn-lg deleteListingButton' onClick={(event) => this.deleteListing(event)}>Delete Listing</button>
                     :
                     null
                     }
                 </div>
-                <br/>
-                <div className='addReviewDiv'>
-                    <button className='addReviewButton' onClick={(event) => this.AddReviewRedirect(event)}>Add Review</button>
-                </div>
-                <br/>
-                <h2 className='listingReviews'>Listing reviews</h2>
+                <h2 className='listingReviewsTitle'>Listing reviews</h2>
 
-                {this.state.authenticated ?
-                    <div>
-                        <h5>Your reviews: </h5> 
-                        <YourReviews authenticated={this.state.authenticated} 
-                        currUser={this.state.currUser}
-                        reviews={this.state.reviews}
-                        deleteReview={(reviewID) => this.deleteReview.bind(this, reviewID)}/>
-                    </div>
-                    : 
-                    null
-                }
 
                 <div>
-                    <h5>Other reviews: </h5>
+                        <h5 className='yourReview'>Your review: </h5> 
+                        <YourReviews 
+                        userReviews={this.state.userReviews}
+                        deleteReview={(reviewID) => this.deleteReview.bind(this, reviewID)}
+                        updateReview={(reviewID) => this.updateReview.bind(this, reviewID)}
+                        AddReviewRedirect={(event) => {this.AddReviewRedirect(event)}}/>
+                </div>
+
+                <div>
+                    <h5 className='otherReviews'>Other reviews: </h5>
                     <OtherReviews 
-                    authenticated={this.state.authenticated} 
-                    currUser={this.state.currUser}
-                    reviews={this.state.reviews}/>
+                    otherReviews={this.state.otherReviews}/>
                 </div>
 
                 <p>{this.state.message}</p>
@@ -202,68 +219,63 @@ class Listing extends React.Component{
 }
 
 function YourReviews(props){
-    if(props.authenticated){
-        return props.reviews.map(review => {
-            if(review.contributor == props.currUser){
+    console.log(props.userReviews.length)
+    if(props.userReviews.length > 0){
+        return props.userReviews.map(review => {
                 return(
                     <div className='listingReview'>
-                        <h5>{review.title}</h5>
-                        <li className='reviewContributor'>Contributor: {review.contributor}</li>
-                        <li className='overallRating'>Overall Rating: {review.overall_rating}</li>
-                        <li className='bugRating'>Bug Rating: {review.bug_rating}</li>
-                        <li className='adminRating'>Admin Rating: {review.admin_rating}</li>
-                        <li className='locationRating'>Location Rating: {review.location_rating}</li>
-                        <p className='reviewComments'>{review.comments}</p>
-                        <button className='deleteReviewButton' onClick={props.deleteReview(review._id)}>Delete Review</button>
+                        <div className='reviewtitleDiv'>
+                            <h5 className='reviewTitle'>{review.title}</h5>
+                        </div>
+                        <div className='reviewDetailsWrapper'>
+                            <div className='reviewSpecs'>
+                                <li className='reviewContributor'>  Overall Rating: {review.overall_rating}/5   |   Bug Rating: {review.bug_rating}/5  
+                                  |  Admin Rating: {review.admin_rating}/5   |   Location Rating: {review.location_rating}/5 </li>
+                            </div>
+                            <div className='reviewCommentsDiv'>
+                                <p className='reviewComments'>{review.comments}</p>
+                            </div>
+                        </div>
+                        <div className='reviewButtons'>
+                            <button type="button" className='btn btn-outline-danger deleteReviewButton' onClick={props.deleteReview(review._id)}>Delete Review</button>
+                            <button type="button" className='btn btn-outline-success updateReviewButton' onClick={props.updateReview(review._id)}>Update Review</button>
+                        </div>
                     </div>
                 )
-            }
         })
     } else{
         return(
-            <p>You have not provided any reviews for this listing.</p>
+            <div className='addReviewDiv'>
+                    <button type="button" className='btn btn-primary btn-lg addReviewButton' onClick={props.AddReviewRedirect}>+ Add Review</button>
+            </div>
         )
     }
 }
 
 function OtherReviews(props){
-    if(props.reviews){
-        return props.reviews.map(review => {
-            if(props.authenticated){
-                if(review.contributor == props.currUser){
-                    return(
-                        null
-                    )
-                } else{
-                    return(
-                        <div className='listingReview'>
-                            <h5>{review.title}</h5>
-                            <li className='reviewContributor'>Contributor: {review.contributor}</li>
-                            <li className='overallRating'>Overall Rating: {review.overall_rating}</li>
-                            <li className='bugRating'>Bug Rating: {review.bug_rating}</li>
-                            <li className='adminRating'>Admin Rating: {review.admin_rating}</li>
-                            <li className='locationRating'>Location Rating: {review.location_rating}</li>
+    if(props.otherReviews.length > 0){
+        return props.otherReviews.map(review => {
+            return(
+                <div className='listingReview'>
+                    <div className='reviewtitleDiv'>
+                        <h5 className='reviewTitle'>{review.title}</h5>
+                    </div>
+                    <div className='reviewDetailsWrapper'>
+                        <div className='reviewSpecs'>
+                            <li >Contributor: {review.contributor}</li>
+                            <li>  Overall Rating: {review.overall_rating}/5   |   Bug Rating: {review.bug_rating}/5  
+                                  |  Admin Rating: {review.admin_rating}/5   |   Location Rating: {review.location_rating}/5 </li>
+                        </div>
+                        <div className='reviewCommentsDiv'>
                             <p className='reviewComments'>{review.comments}</p>
                         </div>
-                    )    
-                }
-            } else{
-                return(
-                    <div className='listingReview'>
-                        <h5>{review.title}</h5>
-                        <li className='reviewContributor'>Contributor: {review.contributor}</li>
-                        <li className='overallRating'>Overall Rating: {review.overall_rating}</li>
-                        <li className='bugRating'>Bug Rating: {review.bug_rating}</li>
-                        <li className='adminRating'>Admin Rating: {review.admin_rating}</li>
-                        <li className='locationRating'>Location Rating: {review.location_rating}</li>
-                        <p className='reviewComments'>{review.comments}</p>
                     </div>
-                )    
-            }
-        }) 
+                </div>
+            )    
+        })
     } else{
         return(
-            <div>No reviews found</div>
+            <div className='noOtherReviews'>No reviews found</div>
         )
     }
 }

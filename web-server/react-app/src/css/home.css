@@ -72,3 +72,9 @@ h2 {
     background-color: #FB6A59;
 }
 
+.displayMessage{
+    text-align: center;
+    color: red;
+    size: 16px;
+}
+

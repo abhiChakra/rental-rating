@@ -7,23 +7,33 @@ const router = express.Router()
 
 router.post('/create_listing', auth, async (req, res) => {
     try{
-        const listing = new Listing({
-            ...req.body,
-            contributor: req.user.username
-        })
-    
-        await listing.save()
-        res.status(200).send(JSON.stringify({'response' : 'Added new listing!'}))
+            const currListing = await Listing.find({number : req.body.number, 
+                                                 street : req.body.street,
+                                                 city: req.body.city,
+                                                 province : req.body.province,
+                                                 country : req.body.country
+                                              })
+            if(currListing.length > 0){
+                return res.status(404).send(JSON.stringify({'response' : 'This listing already exists.'}))
+            } 
 
-    } catch (e) {
-        res.status(404).send(JSON.stringify({'response' : 'Error saving form. Please recheck your input address.'}))
-    }
+            const listing = new Listing({
+                ...req.body,
+                contributor: req.user.username
+            })
+        
+            await listing.save()
+            res.status(200).send(JSON.stringify({'response' : 'Added new listing!'}))
+
+        } catch (e) {
+            res.status(404).send(JSON.stringify({'response' : 'Error saving form. Please recheck your input address.'}))
+        }
 })
 
 router.get('/get_listings', auth, async (req, res) => {
     try{
         const foundListing = await Listing.find({ contributor : req.user.username})
-        if(foundListing){
+        if(foundListing.length > 0){
             res.status(200).send(JSON.stringify({'response' : foundListing}))
         } else {
             res.status(500).send(JSON.stringify({'response':'There are no listings'}))
@@ -47,10 +57,10 @@ router.get('/get_listing_query', async (req, res) => {
                                              province : province,
                                              country : country
                                           })
-        if(currListing){
+        if(currListing.length > 0){
             res.status(200).send(JSON.stringify({'response' : currListing}))
         } else{
-            res.status(404).send(JSON.stringify({'response' : 'Could not find a listing. Please consider logging in and creating a listing.'}))
+            res.status(404).send(JSON.stringify({'response' : 'Could not find a listing for this address. Please consider logging in and creating a listing.'}))
         }
     } catch (error){
         console.log(error)

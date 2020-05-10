@@ -27,10 +27,69 @@ router.post('/:listingID/add_review', auth, async (req, res) => {
     }
 })
 
+router.get('/:review_id/get_review', auth, async (req, res) => {
+    let reviewID = req.params.review_id;
+
+
+    console.log("Within review_id " + reviewID)
+    try{
+        let foundReview = await Review.findOne({_id : reviewID})
+
+        console.log(foundReview)
+
+        if(foundReview){
+            res.status(200).send(JSON.stringify({'response' : foundReview}))
+        } else{
+            console.log("reached else")
+            res.status(404).send(JSON.stringify({'response' : 'No such review found'}))
+        }
+
+    } catch(error){
+        console.log("reached error")
+        console.log(error)
+        res.status(404).send(JSON.stringify({'response' : 'Error fetching this review'}))
+    }
+})
+
+router.post('/:review_id/update_review', auth, async (req, res) => {
+    console.log('foundReview')
+
+    let reviewID = req.params.review_id;
+    try{
+        const foundReviews = await Review.findOne({ _id : reviewID})
+
+        console.log(foundReviews)
+        console.log(req.body.overall_rating)
+
+        if(foundReviews){
+            foundReviews.overall_rating = req.body.overall_rating;
+            foundReviews.bug_rating = req.body.bug_rating;
+            foundReviews.admin_rating = req.body.admin_rating;
+            foundReviews.location_rating = req.body.location_rating;
+            foundReviews.title = req.body.title;
+            foundReviews.comments = req.body.comments;
+
+
+            console.log(foundReviews)
+            
+            await foundReviews.save();
+            res.status(200).send(JSON.stringify({'response' : foundReviews}))
+        } else{
+            console.log('could not find review')
+            res.status(404).send(JSON.stringify({'response' : 'Could not find such a review'}))
+        }
+    } catch(error){
+        console.log('reached error')
+        console.log(error)
+        res.status(404).send(JSON.stringify({'response' : 'Error updating review.'}))
+    }
+})
+
+
 router.get('/get_reviews', auth, async (req, res) => {
     try{
         const foundReviews = await Review.find({contributor : req.user.username})
-        if(foundReviews){
+        if(foundReviews.length > 0){
             res.status(200).send(JSON.stringify({'response' : foundReviews}))
         } else {
             res.status(500).send(JSON.stringify({'response':'There are no reviews'}))
@@ -46,7 +105,7 @@ router.get('/:listingID/get_reviews', async (req, res) => {
 
     try{
         const foundReviews = await Review.find({listing: listingID})
-        if(foundReviews){
+        if(foundReviews.length > 0){
             res.status(200).send(JSON.stringify({'response' : foundReviews}))
         } else {
             res.status(500).send(JSON.stringify({'response':'There are no reviews'}))

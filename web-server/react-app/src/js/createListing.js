@@ -1,6 +1,7 @@
 import React from 'react'
 import PlacesAutocomplete from 'react-places-autocomplete'
 import Navbar from './navbar'
+import '../css/createListing.css'
 
 class CreateListing extends React.Component{
     constructor(props){
@@ -109,13 +110,13 @@ class CreateListing extends React.Component{
         ).then((res) => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                    this.setState({message : res.respose})
+                    this.setState({message : res.response})
                     let currFetch = '/user/profile/' + this.state.currUser;
                     this.props.history.push(currFetch)
                 })
             } else{
                 (res.json()).then(res => {
-                    this.setState({message : res.respose})
+                    this.setState({message : res.response})
                 })
             }
         }).catch((error) => {
@@ -127,10 +128,7 @@ class CreateListing extends React.Component{
         return(
             <div>
                 <Navbar />
-                <h2>Create new Listing</h2> <br/>
-
-
-                <h4>Search an address: </h4> <br/>
+                <h4 className='searchAddressTitle'>Search an address: </h4> <br/>
                     <PlacesAutocomplete
                         value={this.state.address}
                         onChange={this.handleChange}
@@ -152,9 +150,6 @@ class CreateListing extends React.Component{
                                     type: "text"
                                 })} />
                                 </div>
-                                <div className='homeSearchButton'>
-                                    <button className="btn btn-primary btn-lg" type="button" onClick={(event) => this.handleSubmit(event)}>Search</button> 
-                                </div>
                                 <br/>
                                 <br/>
                             </div>
@@ -174,100 +169,79 @@ class CreateListing extends React.Component{
                             </div>
                         </div>
                             )}
-                    </PlacesAutocomplete> <br />
+                    </PlacesAutocomplete>
 
-                {/* <PlacesAutocomplete
-                    value={this.state.address}
-                    onChange={this.handleChange}
-                    onSelect={this.handleSelect}
-                >
-                {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-                    <div>
-                        <input  {...getInputProps({
-                                placeholder: 'Search Places ...',
-                                className: 'location-search-input',
-                        })} />
-
-                        <div>
-                            {loading ? <div>...loading </div> : null}
-
-                            {suggestions.map((suggestion) => {
-                                return(
-                                    <div {...getSuggestionItemProps(suggestion)}>
-                                        {suggestion.description}
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                )}
-                </PlacesAutocomplete> */}
-
-                <Number /> <br/>
-                <Street /> <br/>
-                <City /> <br />
-                <Province /> <br/>
-                <Country /> <br/><br/>
-                <Submit submitListing={(event) => this.submitListing(event)} /><br/>
-                <Message userMessage={this.state.message}/>
+                <div className='container listingFormInfo'>
+                        <Number /> 
+                        <Street />
+                        <City />
+                        <Province /> 
+                        <Country /> 
+                </div>
+                <div className='container listingFormInfo2'>
+                        <Submit submitListing={(event) => this.submitListing(event)} /><br/>
+                        <Message userMessage={this.state.message}/>
+                </div>
             </div>
         )
     }
 }
 function Message(props){
     return(
-        <p>{props.userMessage}</p>
+            <p className='createListingMessage'>{props.userMessage}</p>
     )
 }
 
 function Number(props){
     return(
-        <div>
-            <p>House/building number: </p>
-            <input id='houseNum' placeholder='123'></input>
+        <div className='inputFormDiv'>
+            <p className='inputFormDes'>House/building number: </p>
+            <input className="form-control inputForm" id='houseNum' placeholder='123'></input>
         </div>
     )
 }
 
 function Street(props){
     return(
-        <div>
-            <p>Street Name: </p>
-            <input id='streetName' placeholder='Sussex Rd'></input>
+        <div className='inputFormDiv'>
+            <p className='inputFormDes'>Street Name: </p>
+            <input className="form-control inputForm" id='streetName' placeholder='Sussex Rd'></input>
         </div>
     )
 }
 
 function City(props){
     return(
-        <div>
-            <p>City:</p>
-            <input id='cityName' placeholder='Toronto'></input>
+        <div className='inputFormDiv'>
+            <p className='inputFormDes'>City:</p>
+            <input className="form-control inputForm" id='cityName' placeholder='Toronto'></input>
         </div>
     )
 }
 
 function Province(props){
     return(
-        <div>
-            <p>Province:</p>
-            <input id='provinceName' placeholder='Ontario'></input>
+        <div className='inputFormDiv'>
+            <p className='inputFormDes'>Province:</p>
+            <input className="form-control inputForm" id='provinceName' placeholder='Ontario'></input>
         </div>
     )
 }
 
 function Country(props){
     return(
-        <div>
-            <p>Country:</p>
-            <input id='countryName' placeholder='Canada'></input>
+        <div className='inputFormDiv'>
+            <p className='inputFormDes'>Country:</p>
+            <input className="form-control inputForm" id='countryName' placeholder='Canada'></input>
         </div>
     )
 }
 
 function Submit(props){
     return(
-        <button onClick={props.submitListing}>Submit</button>
+        <div className='submitForm'>
+            <button type="button" className='createListingButton' className="btn btn-primary btn-lg btn-block" onClick={props.submitListing}>Create Listing</button>
+        </div>
     )
 }
 

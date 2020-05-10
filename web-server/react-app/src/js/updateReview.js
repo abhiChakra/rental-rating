@@ -1,11 +1,12 @@
 import React from 'react'
 import Navbar from './navbar';
 
-class CreateReview extends React.Component {
+class UpdateReview extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            listingID : this.props.match.params.listingID,
+            reviewID : this.props.match.params.reviewID,
+            listingID: this.props.match.params.listingID,
             listingAddress: null,
             overallRating: null,
             bugRating: null,
@@ -18,8 +19,47 @@ class CreateReview extends React.Component {
     }
 
     componentDidMount(){
-        let currFetch = 'http://127.0.0.1:5000/get_listing/' + this.state.listingID;
-        fetch(currFetch, {
+        let reviewFetch = 'http://127.0.0.1:5000/' + this.state.reviewID + '/get_review';
+        fetch(reviewFetch, {
+                            method: 'GET',
+                            mode: 'cors',
+                            headers: {
+                                'Accept' : 'application/json'
+                            },
+                            credentials: 'include'
+                        }
+        ).then(res => {
+            if(res.status == 200){
+                (res.json()).then(res => {
+                    console.log(res.response)
+    
+                    this.setState({ overallRating : res.response.overall_rating,
+                        bugRating : res.response.bug_rating,
+                        adminRating : res.response.admin_rating,
+                        locationRating : res.response.location_rating,
+                        reviewTitle: res.response.title,
+                        reviewComments: res.response.comments})
+    
+                        document.getElementById('overallRatingInput').value = res.response.overall_rating
+                        document.getElementById('bugRating').value = res.response.bug_rating
+                        document.getElementById('adminRating').value = res.response.admin_rating
+                        document.getElementById('locationRating').value = res.response.location_rating
+                        document.getElementById('reviewTitle').value = res.response.title
+                        document.getElementById('reviewComments').value = res.response.comments
+                    })
+            }else{
+                (res.json()).then(res => {
+                    console.log(res.response)
+                })
+            }
+            
+        }).catch(e => {
+            console.log(e)
+        })
+
+
+        let listingFetch = 'http://127.0.0.1:5000/get_listing/' + this.state.listingID;
+        fetch(listingFetch, {
                             method: 'GET',
                             mode: 'cors',
                             headers: {
@@ -65,7 +105,7 @@ class CreateReview extends React.Component {
     handleReviewSubmit(event){
         event.preventDefault();
 
-        let currFetch = 'http://127.0.0.1:5000/' + this.state.listingID + '/add_review';
+        let currFetch = 'http://127.0.0.1:5000/' + this.state.reviewID + '/update_review';
 
         let reviewBody = {
             "overall_rating" : this.state.overallRating,
@@ -75,6 +115,8 @@ class CreateReview extends React.Component {
             "title" : this.state.reviewTitle,
             "comments" : this.state.reviewComments
         }
+
+        console.log(reviewBody)
 
         fetch(currFetch, {
                             method : 'POST',
@@ -90,7 +132,10 @@ class CreateReview extends React.Component {
            if(res.status == 200){
                this.props.history.push('/listing/' + this.state.listingID)
            } else{
-               this.setState({message : res.response})
+               (res.json()).then(res => {
+                    console.log(res.response)
+                    this.setState({message : res.response})
+               })
            }
         }).catch(e => {
             console.log(e);
@@ -101,7 +146,7 @@ class CreateReview extends React.Component {
         return(
             <div>
                 <Navbar />
-                <h5>Create your review for {this.state.listingAddress}</h5>
+                <h5>Update your review for {this.state.listingAddress}</h5>
                 <RatingTitle handleReviewTitle={(event) => this.handleReviewTitle(event)}/>
                 <Overall handleOverallRating={(event) => this.handleOverallRating(event)}/>
                 <BugRating handleBugRating={(event) => this.handleBugRating(event)} />
@@ -173,11 +218,11 @@ function Comments(props){
 function SubmitReview(props){
     return(
         <div>
-            <button onClick={props.handleReviewSubmit}>Submit</button>
+            <button onClick={props.handleReviewSubmit}>Save Review</button>
         </div>
     )
 }
 
 
 
-export default CreateReview;
+export default UpdateReview;

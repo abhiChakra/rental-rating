@@ -8,7 +8,6 @@ class Home extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            userMessage : 'Welcome! Login or signup!',
             'address' : '',
             'number' : null,
             'street' : null,
@@ -20,58 +19,8 @@ class Home extends React.Component {
         }
     }
 
-    checkAuthenticated(){
-        fetch('http://127.0.0.1:5000/user/is_authenticated', {
-                                                            method: 'GET', 
-                                                            mode: 'cors',
-                                                            headers:{
-                                                                'Accept' : 'application/json'
-                                                            },
-                                                            credentials : 'include'
-                                                            }
-        ).then(res => {
-            if(res.status == 200){
-                (res.json()).then(res => {
-                    this.setState({userMessage: 'Welcome back ' + res.response.username})
-                })
-            } else{
-                return null;
-            }
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
-
-    componentDidMount(){
-       this.checkAuthenticated();
-    }
-
-    // logoutAction(event){
-    //     event.preventDefault();
-    //     fetch('http://127.0.0.1:5000/logout', {
-    //                                     method: 'GET',
-    //                                     mode: 'cors',
-    //                                     headers : {
-    //                                         'Accept': 'application/json'
-    //                                        },
-    //                                     credentials: 'include'
-    //                                    }
-    //     ).then(res => {
-    //         if(res.status === 200){         
-    //             this.setState({authenticated : false, userMessage : 'Welcome! Login or signup!'})
-    //             this.props.history.push('/');
-    //         } else{
-    //             (res.json()).then((res) => {
-    //                 this.setState({userMessage : res.response})
-    //             })
-    //         }
-    //     }).catch((error) => {
-    //         console.log(error)
-    //     })
-    // }
-
     handleChange = address => {
-        this.setState({ address });
+        this.setState({ address : address, message : '' });
     };
 
     handleSelect = address => {
@@ -189,27 +138,33 @@ class Home extends React.Component {
                             )}
                     </PlacesAutocomplete> <br />
 
-                    <QueryListings queryListings={this.state.queryRes}/>
-
-                    <div>{this.state.message}</div>
+                    <QueryListings message={this.state.message} queryListings={this.state.queryRes}/>
                 </div>
             )
         }
 }
 
 function QueryListings(props){
-    return props.queryListings.map(listing => {
-        let pathname = '/listing/' + listing._id 
+    if(props.queryListings){
+        return props.queryListings.map(listing => {
+            let pathname = '/listing/' + listing._id 
+            return(
+                <div className='queryItem'>
+                   <Link className='addressLink' to={{
+                       pathname: pathname
+                   }}>Address: {listing.number} {listing.street}, 
+                   {listing.city}, {listing.province}, {listing.country}</Link>
+                   <br/>
+                </div>
+            )
+        })
+    } else{
         return(
-            <div className='queryItem'>
-               <Link className='addressLink' to={{
-                   pathname: pathname
-               }}>Address: {listing.number} {listing.street}, 
-               {listing.city}, {listing.province}, {listing.country}</Link>
-               <br/>
+            <div className='displayMessage'>
+                {props.message}
             </div>
         )
-    })
+    }
 }
 
 export default Home
