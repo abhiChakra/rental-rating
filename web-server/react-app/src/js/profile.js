@@ -1,13 +1,13 @@
 import React from 'react';
 import Navbar from './navbar';
-import '../css/profile.css'
-
+import '../css/profile.css';
+//import Recaptcha from 'react-recaptcha';
 
 class CreateProfile extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            message: '',
+            signupMessage: '',
             email: null, 
             username: null,
             password: null
@@ -15,7 +15,7 @@ class CreateProfile extends React.Component {
     }
 
     checkAuthenticated(){
-        fetch('http://127.0.0.1:5000/user/is_authenticated', {
+        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                             method: 'GET', 
                                                             mode: 'cors',
                                                             headers:{
@@ -60,10 +60,7 @@ class CreateProfile extends React.Component {
         
         let userCreds = this.state
 
-        console.log(userCreds)
-        console.log(JSON.stringify(userCreds))
-
-        fetch('http://127.0.0.1:5000/create_user', {
+        fetch('http://'+process.env.REACT_APP_IP+':5000/create_user', {
                                             method: 'POST',
                                             mode: 'cors',
                                             headers: {
@@ -81,16 +78,16 @@ class CreateProfile extends React.Component {
                 } else{
                     (res.json()).then(res => {
                         if(res.response.name == 'MongoError'){
-                            if(res.response.errmsg == 'E11000 duplicate key error collection: rental-ratings.users index: email_1 dup key: { : "elon@tesla.ca" }'){
-                                this.setState({message : 'An account with this email already exists.\n Please try a different email or login.'})
-                            } else if(res.response.errmsg == 'E11000 duplicate key error collection: rental-ratings.users index: username_1 dup key: { : "elon999" }'){
-                                this.setState({message : 'Username already taken. Try a different one.'})
+                            if(res.response.errmsg.split(':')[2] == " email_1 dup key"){
+                                this.setState({signupMessage : 'An account with this email already exists.\n Please try a different email or login.'})
+                            } else if(res.response.errmsg.split(':')[2] == " username_1 dup key"){
+                                this.setState({signupMessage : 'Username already taken. Try a different one.'})
                             }
                         } else if(res.response.name == 'ValidationError'){
                             if(res.response.message == 'User validation failed: password: Password must be at least 6 characters'){
-                                this.setState({message : 'Password must be at least 6 characters'})
+                                this.setState({signupMessage : 'Password must be at least 6 characters'})
                             } else {
-                                this.setState({message : 'Must provide all required credentials.'})
+                                this.setState({signupMessage : 'Must provide all required credentials.'})
                             }
                         } else{
                             console.log(res.response)
@@ -116,7 +113,7 @@ class CreateProfile extends React.Component {
                             <CreateUser submitUser={(event) => this.submitUser(event)}/>
                             <br />
                         </form>
-                        <Message message={this.state.message} />
+                        <Message signupMessage={this.state.signupMessage} />
                     </div>
                 </div>
             </div>
@@ -160,7 +157,7 @@ function CreateUser(props){
 
 function Message(props){
     return(
-        <p className='signupMessage'>{props.message}</p>
+        <p className='signupMessage'>{props.signupMessage}</p>
     )
 }
 

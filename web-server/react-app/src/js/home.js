@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from './navbar';
 import PlacesAutocomplete from 'react-places-autocomplete'
 import '../css/home.css'
+require('dotenv').config();
 
 class Home extends React.Component {
     constructor(props){
@@ -50,7 +51,7 @@ class Home extends React.Component {
             this.state.number, this.state.street, this.state.city, this.state.province, this.state.country
         )
 
-        let currFetch = 'http://127.0.0.1:5000/get_listing_query?' + 
+        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/get_listing_query?' + 
         'number=' + this.state.number + '&street=' + this.state.street +
         '&city=' + this.state.city + '&province=' + this.state.province + 
         '&country=' + this.state.country 

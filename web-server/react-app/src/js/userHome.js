@@ -18,7 +18,7 @@ class UserHome extends React.Component {
     }
 
     fetchUserListings(){
-        fetch('http://127.0.0.1:5000/get_listings', {
+        fetch('http://'+process.env.REACT_APP_IP+':5000/get_listings', {
                                                     method : 'GET',
                                                     mode: 'cors',
                                                     headers: {
@@ -51,7 +51,7 @@ class UserHome extends React.Component {
               {
                 label: 'Yes',
                 onClick: () => {
-                    fetch('http://127.0.0.1:5000/user/delete_user', {
+                    fetch('http://'+process.env.REACT_APP_IP+':5000/user/delete_user', {
                                                                     method: 'DELETE',
                                                                     mode: 'cors',
                                                                     headers:{
@@ -82,7 +82,7 @@ class UserHome extends React.Component {
     }
 
     componentDidMount(){
-        fetch('http://127.0.0.1:5000/user/is_authenticated', {
+        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                                 method: 'GET', 
                                                                 mode: 'cors',
                                                                 headers:{

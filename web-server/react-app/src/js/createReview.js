@@ -1,6 +1,7 @@
 import React from 'react'
 import Navbar from './navbar';
 import '../css/createReview.css'
+require('dotenv').config();
 
 class CreateReview extends React.Component {
     constructor(props){
@@ -19,7 +20,7 @@ class CreateReview extends React.Component {
     }
 
     componentDidMount(){
-        let currFetch = 'http://127.0.0.1:5000/get_listing/' + this.state.listingID;
+        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/get_listing/' + this.state.listingID;
         fetch(currFetch, {
                             method: 'GET',
                             mode: 'cors',
@@ -72,7 +73,7 @@ class CreateReview extends React.Component {
     handleReviewSubmit(event){
         event.preventDefault();
 
-        let currFetch = 'http://127.0.0.1:5000/' + this.state.listingID + '/add_review';
+        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.listingID + '/add_review';
 
         let reviewBody = {
             "overall_rating" : this.state.overallRating,

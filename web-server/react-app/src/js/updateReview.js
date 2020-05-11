@@ -20,7 +20,7 @@ class UpdateReview extends React.Component {
     }
 
     componentDidMount(){
-        let reviewFetch = 'http://127.0.0.1:5000/' + this.state.reviewID + '/get_review';
+        let reviewFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.reviewID + '/get_review';
         fetch(reviewFetch, {
                             method: 'GET',
                             mode: 'cors',
@@ -59,7 +59,7 @@ class UpdateReview extends React.Component {
         })
 
 
-        let listingFetch = 'http://127.0.0.1:5000/get_listing/' + this.state.listingID;
+        let listingFetch = 'http://'+process.env.REACT_APP_IP+':5000/get_listing/' + this.state.listingID;
         fetch(listingFetch, {
                             method: 'GET',
                             mode: 'cors',
@@ -112,7 +112,7 @@ class UpdateReview extends React.Component {
     handleReviewSubmit(event){
         event.preventDefault();
 
-        let currFetch = 'http://127.0.0.1:5000/' + this.state.reviewID + '/update_review';
+        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.reviewID + '/update_review';
 
         let reviewBody = {
             "overall_rating" : this.state.overallRating,

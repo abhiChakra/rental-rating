@@ -101,8 +101,16 @@ router.get('/user/is_authenticated', auth, async (req, res) => {
 
 router.delete('/user/delete_user', auth, async (req, res) => {
     try{
+        const userListings = await Listing.find({contributor : req.user.username})
+
+        if(userListings.length > 0){
+            userListings.map(async listing => {
+                await Review.deleteMany({listing : listing._id})
+                await Listing.deleteOne({_id : listing._id})
+            })
+        }
+        
         await Review.deleteMany({contributor : req.user.username})
-        await Listing.deleteMany({contributor : req.user.username})
 
         const deletedUser = await User.deleteOne({_id: req.user._id})
 

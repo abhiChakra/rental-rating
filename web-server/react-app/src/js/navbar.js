@@ -14,7 +14,7 @@ class Navbar extends React.Component {
     }
 
     checkAuthenticated(){
-        fetch('http://127.0.0.1:5000/user/is_authenticated', {
+        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                             method: 'GET', 
                                                             mode: 'cors',
                                                             headers:{
@@ -49,7 +49,7 @@ class Navbar extends React.Component {
               {
                 label: 'Yes',
                 onClick: () => {
-                    fetch('http://127.0.0.1:5000/logout', {
+                    fetch('http://'+process.env.REACT_APP_IP+':5000/logout', {
                                         method: 'GET',
                                         mode: 'cors',
                                         headers : {

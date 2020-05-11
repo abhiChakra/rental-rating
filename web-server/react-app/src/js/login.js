@@ -2,7 +2,6 @@ import React from 'react';
 import Navbar from './navbar';
 import '../css/login.css'
 
-
 class LoginForm extends React.Component {
     constructor(props){
         super(props);
@@ -14,7 +13,7 @@ class LoginForm extends React.Component {
     }
 
     checkAuthenticated(){
-        fetch('http://127.0.0.1:5000/user/is_authenticated', {
+        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                             method: 'GET', 
                                                             mode: 'cors',
                                                             headers:{
@@ -55,7 +54,7 @@ class LoginForm extends React.Component {
             'password' : this.state.password
         }
 
-        fetch('http://127.0.0.1:5000/login', {
+        fetch('http://'+process.env.REACT_APP_IP+':5000/login', {
                                             method: 'POST', 
                                             mode: 'cors',
                                             headers: {

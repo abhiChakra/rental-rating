@@ -3,6 +3,7 @@ import Navbar from './navbar';
 import '../css/listing.css'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+require('dotenv').config();
 
 class Listing extends React.Component{
     constructor(props){
@@ -26,7 +27,7 @@ class Listing extends React.Component{
     fetchListingReviews(listingID){
         this.setState({userReviews : []})
 
-        let currFetch = 'http://127.0.0.1:5000/' + listingID + '/' + 'get_reviews';
+        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + listingID + '/' + 'get_reviews';
 
         fetch(currFetch, {
                             'method' : 'GET',
@@ -71,7 +72,7 @@ class Listing extends React.Component{
     componentDidMount(){
         const  { id } = this.props.match.params;
 
-        let currFetch = 'http://127.0.0.1:5000/get_listing/' + id.toString();
+        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/get_listing/' + id.toString();
         fetch(currFetch, {
                             method: 'GET', 
                             mode: 'cors',
@@ -99,7 +100,7 @@ class Listing extends React.Component{
     checkAuthenticated(){
         const  { id } = this.props.match.params;
 
-        fetch('http://127.0.0.1:5000/user/is_authenticated', {
+        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                             method: 'GET', 
                                                             mode: 'cors',
                                                             headers:{
@@ -141,7 +142,7 @@ class Listing extends React.Component{
                 onClick: () => {
                     const  { id } = this.props.match.params;
 
-                    let currFetch = 'http://127.0.0.1:5000/delete_listing/' + id;
+                    let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/delete_listing/' + id;
                     fetch(currFetch,                            {
                                                                     method: 'DELETE',
                                                                     mode: 'cors',
@@ -181,7 +182,7 @@ class Listing extends React.Component{
         console.log('deleting review')
         console.log(reviewID)
 
-        let currFetch = 'http://127.0.0.1:5000/delete_review/' + reviewID;
+        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/delete_review/' + reviewID;
         fetch(currFetch, {
                             method: 'DELETE',
                             mode: 'cors',
@@ -204,7 +205,7 @@ class Listing extends React.Component{
             <div>
                 <Navbar />
                 <h2 className='listingHeader'>{this.state.address}, {this.state.city},  
-                {this.state.province}, {this.state.country}</h2>
+                 {this.state.province}, {this.state.country}</h2>
                 <p className='contributor'>Contributor: {this.state.contributor}</p>
                 <div>
                     {(this.state.authenticated && this.state.contributor == this.state.currUser) ? 

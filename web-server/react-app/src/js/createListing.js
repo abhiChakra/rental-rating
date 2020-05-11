@@ -2,6 +2,7 @@ import React from 'react'
 import PlacesAutocomplete from 'react-places-autocomplete'
 import Navbar from './navbar'
 import '../css/createListing.css'
+require('dotenv').config();
 
 class CreateListing extends React.Component{
     constructor(props){
@@ -19,7 +20,7 @@ class CreateListing extends React.Component{
     }
 
     checkAuthenticated(){
-        fetch('http://127.0.0.1:5000/user/is_authenticated', {
+        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                             method: 'GET', 
                                                             mode: 'cors',
                                                             headers:{
@@ -98,7 +99,8 @@ class CreateListing extends React.Component{
         
         console.log(JSON.stringify(myListing))
 
-        fetch('http://127.0.0.1:5000/create_listing', {
+
+        fetch('http://'+process.env.REACT_APP_IP+':5000/create_listing', {
                                                        method: 'POST',
                                                        mode: 'cors',
                                                        headers: {
