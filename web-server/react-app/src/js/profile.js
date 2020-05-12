@@ -10,7 +10,7 @@ class CreateProfile extends React.Component {
             signupMessage: '',
             email: null, 
             username: null,
-            password: null
+            password: null,
         }
     }
 
@@ -109,6 +109,12 @@ class CreateProfile extends React.Component {
                             <Email updateEmail={(event) => this.updateEmail(event)} />
                             <Username updateUsername={(event) => this.updateUsername(event)}/>
                             <Password updatePassword={(event) => this.updatePassword(event)}/>
+                            {/* <Recaptcha
+                                sitekey="6LeMZvUUAAAAAKUseOsUurdPLbhBu10byJagRND7"
+                                render="explicit"
+                                onloadCallback={() => {}}
+                                verifyCallback={() => {this.setState({botAuthenticated : true})}}
+                            /> */}
                             <br />
                             <CreateUser submitUser={(event) => this.submitUser(event)}/>
                             <br />
