@@ -76,6 +76,7 @@ class CreateReview extends React.Component {
         let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.listingID + '/add_review';
 
         let reviewBody = {
+            "currUserToken" : this.props.token,
             "overall_rating" : this.state.overallRating,
             "bug_rating" : this.state.bugRating,
             "admin_rating" : this.state.adminRating,
@@ -103,7 +104,6 @@ class CreateReview extends React.Component {
                })
            }
         }).catch(e => {
-            console.log("detecting error");
             console.log(e);
         })
     }
@@ -111,7 +111,7 @@ class CreateReview extends React.Component {
     render(){
         return(
             <div>
-                <Navbar />
+                <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest}/>
                 <h4 className='createReviewHeader'>Create your review for {this.state.listingAddress}</h4>
                 <div className='createReviewFormDiv'>
                     <RatingTitle handleReviewTitle={(event) => this.handleReviewTitle(event)}/>

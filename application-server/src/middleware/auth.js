@@ -4,10 +4,10 @@ require('dotenv').config()
 
 const auth = async (req, res, next) => {
 
-    const token = req.cookies.token
+    const token = req.body.currUserToken;
 
     if(!token){
-        res.status(404).send(JSON.stringify({'response':'Unauthorized: No token provided'}))
+        res.status(401).send(JSON.stringify({'response':'Unauthorized: No token provided'}))
     } else{
         try{
             //const token = req.header('Authorization').replace('Bearer ', '')
@@ -15,7 +15,7 @@ const auth = async (req, res, next) => {
             const user = await User.findOne({ _id: decodedId, 'tokens.token':token})
     
             if(!user){
-                res.status(404).send(JSON.stringify({'response':'Unauthorized: Could not find user.'}))
+                res.status(401).send(JSON.stringify({'response':'Unauthorized: Could not find user.'}))
             }
     
             req.token = token

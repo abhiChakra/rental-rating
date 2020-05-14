@@ -26,39 +26,28 @@ router.post('/:listingID/add_review', auth, async (req, res) => {
     }
 })
 
-router.get('/:review_id/get_review', auth, async (req, res) => {
+router.post('/:review_id/get_review', auth, async (req, res) => {
     let reviewID = req.params.review_id;
 
-
-    console.log("Within review_id " + reviewID)
     try{
         let foundReview = await Review.findOne({_id : reviewID})
-
-        console.log(foundReview)
 
         if(foundReview){
             res.status(200).send(JSON.stringify({'response' : foundReview}))
         } else{
-            console.log("reached else")
             res.status(404).send(JSON.stringify({'response' : 'Could not retrieve review details.'}))
         }
 
     } catch(error){
-        console.log("reached error")
         console.log(error)
         res.status(404).send(JSON.stringify({'response' : 'Error fetching this review'}))
     }
 })
 
 router.post('/:review_id/update_review', auth, async (req, res) => {
-    console.log('foundReview')
-
     let reviewID = req.params.review_id;
     try{
         const foundReviews = await Review.findOne({ _id : reviewID, contributor : req.user.username})
-
-        console.log(foundReviews)
-        console.log(req.body.overall_rating)
 
         if(foundReviews){
             foundReviews.overall_rating = req.body.overall_rating;
@@ -67,9 +56,6 @@ router.post('/:review_id/update_review', auth, async (req, res) => {
             foundReviews.location_rating = req.body.location_rating;
             foundReviews.title = req.body.title;
             foundReviews.comments = req.body.comments;
-
-
-            console.log(foundReviews)
             
             await foundReviews.save();
             res.status(200).send(JSON.stringify({'response' : foundReviews}))
@@ -77,7 +63,6 @@ router.post('/:review_id/update_review', auth, async (req, res) => {
             res.status(404).send(JSON.stringify({'response' : 'Could not update review. Please verify your entries.'}))
         }
     } catch(error){
-        console.log('reached error')
         console.log(error)
         res.status(404).send(JSON.stringify({'response' : 'Error updating review.'}))
     }

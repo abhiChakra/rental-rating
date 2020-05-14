@@ -22,18 +22,19 @@ class UpdateReview extends React.Component {
     componentDidMount(){
         let reviewFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.reviewID + '/get_review';
         fetch(reviewFetch, {
-                            method: 'GET',
+                            method: 'POST',
                             mode: 'cors',
                             headers: {
+                                'Content-Type' : 'application/json',
                                 'Accept' : 'application/json'
                             },
+                            body: JSON.stringify({'currUserToken' : this.props.token}),
                             credentials: 'include'
                         }
         ).then(res => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                    console.log(res.response)
-    
+
                     this.setState({ overallRating : res.response.overall_rating,
                         bugRating : res.response.bug_rating,
                         adminRating : res.response.admin_rating,
@@ -115,6 +116,7 @@ class UpdateReview extends React.Component {
         let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.reviewID + '/update_review';
 
         let reviewBody = {
+            'currUserToken' : this.props.token,
             "overall_rating" : this.state.overallRating,
             "bug_rating" : this.state.bugRating,
             "admin_rating" : this.state.adminRating,
@@ -122,8 +124,6 @@ class UpdateReview extends React.Component {
             "title" : this.state.reviewTitle,
             "comments" : this.state.reviewComments
         }
-
-        console.log(reviewBody)
 
         fetch(currFetch, {
                             method : 'POST',
@@ -151,7 +151,7 @@ class UpdateReview extends React.Component {
     render(){
         return(
             <div>
-                <Navbar />
+                <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest}/>
                 <h4 className='createReviewHeader'>Update your review for {this.state.listingAddress}</h4>
                 <div className='createReviewFormDiv'>
                     <RatingTitle handleReviewTitle={(event) => this.handleReviewTitle(event)}/>

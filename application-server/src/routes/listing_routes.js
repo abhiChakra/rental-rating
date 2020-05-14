@@ -30,7 +30,7 @@ router.post('/create_listing', auth, async (req, res) => {
         }
 })
 
-router.get('/get_listings', auth, async (req, res) => {
+router.post('/get_listings', auth, async (req, res) => {
     try{
         const foundListing = await Listing.find({ contributor : req.user.username})
         if(foundListing.length > 0){

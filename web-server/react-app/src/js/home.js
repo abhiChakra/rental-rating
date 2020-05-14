@@ -47,10 +47,6 @@ class Home extends React.Component {
     handleSubmit(event){
         event.preventDefault();
 
-        console.log(
-            this.state.number, this.state.street, this.state.city, this.state.province, this.state.country
-        )
-
         let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/get_listing_query?' + 
         'number=' + this.state.number + '&street=' + this.state.street +
         '&city=' + this.state.city + '&province=' + this.state.province + 
@@ -66,7 +62,6 @@ class Home extends React.Component {
         ).then(res => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                    console.log(res.response)
                     this.setState({ queryRes : res.response})
                 })
             } else{
@@ -88,8 +83,7 @@ class Home extends React.Component {
     render(){
         return(
                 <div>
-                    <Navbar />
-
+                    <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest}/>
                     <PlacesAutocomplete
                         value={this.state.address}
                         onChange={this.handleChange}
@@ -101,6 +95,7 @@ class Home extends React.Component {
                         <div>
                             <div className='titleBar'>
                                 <h2>Search Your Rental </h2>
+                                <a href='https://www.youtube.com/watch?v=MDknWBXezBc'>Watch a quick walkthrough of using Rate A Rental on YouTube!</a>
                             </div>
                             <br/>
                             <div className='searchBar'>
@@ -109,7 +104,7 @@ class Home extends React.Component {
                                aria-label = "Recipient's username"
                                aria-describedby = "basic-addon2"
                                 {...getInputProps({
-                                    placeholder: '24 Sussex Drive, Ottawa, ON, Canada',
+                                    placeholder: '81 St Mary St, Toronto, ON, Canada',
                                     className: 'location-search-input form-control',
                                     id: 'searchInput',
                                     type: "text"
@@ -140,6 +135,7 @@ class Home extends React.Component {
                     </PlacesAutocomplete> <br />
 
                     <QueryListings message={this.state.message} queryListings={this.state.queryRes}/>
+                    <br/>
                 </div>
             )
         }

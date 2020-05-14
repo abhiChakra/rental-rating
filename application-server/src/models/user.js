@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+//const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
     'email':{
@@ -22,7 +23,9 @@ const userSchema = new mongoose.Schema({
                 throw Error('Password must be at least 6 characters')
             }
         }
-    }, 
+    },
+    resetPwdToken : String, 
+    resetPwdExpires : Date,
     'tokens':[{
         token : {
             type: String, 
@@ -45,7 +48,7 @@ userSchema.virtual('reviews', {
 
 userSchema.methods.generateToken = async function(){
 
-    const currUser = this
+    let currUser = this
 
     const currToken = jwt.sign({ _id: currUser._id.toString()}, process.env.TOKEN_KEY)
 
@@ -55,6 +58,18 @@ userSchema.methods.generateToken = async function(){
 
     return [newUser, currToken]
 }
+
+// userSchema.methods.generatePwdResetToken = async function(){
+//     let currUser = this
+
+//     let currPwdToken = null;
+
+    
+
+//     const newUser = await currUser.updateOne({resetPwdToken : currPwdToken, resetPwdExpires : Date.now() + 600000})
+
+//     return newUser.resetPwdToken
+// }
 
 userSchema.statics.authenticateUser = async (input_username, input_password) => {
 

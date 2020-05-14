@@ -4,6 +4,8 @@ import Navbar from './navbar';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import '../css/userHome.css'
+// import { useCookies } from 'react-cookie';
+// const [cookies] = useCookies(['token']);
 
 class UserHome extends React.Component {
     constructor(props){
@@ -18,12 +20,15 @@ class UserHome extends React.Component {
     }
 
     fetchUserListings(){
+        let currCookieToken = this.props.token;
         fetch('http://'+process.env.REACT_APP_IP+':5000/get_listings', {
-                                                    method : 'GET',
+                                                    method : 'POST',
                                                     mode: 'cors',
                                                     headers: {
+                                                        'Content-Type' : 'application/json',
                                                         'Accept' : 'application/json',
                                                     }, 
+                                                    body: JSON.stringify({'currUserToken' : currCookieToken}),
                                                     credentials: 'include'
                                                     }
         ).then((res) => {
@@ -42,6 +47,7 @@ class UserHome extends React.Component {
     }
 
     deleteUserProfile(event){
+        let currCookieToken = this.props.token;
         event.preventDefault();
 
         confirmAlert({
@@ -55,13 +61,18 @@ class UserHome extends React.Component {
                                                                     method: 'DELETE',
                                                                     mode: 'cors',
                                                                     headers:{
+                                                                        'Content-Type' : 'application/json',
                                                                         'Accept' : 'application/json'
                                                                     },
+                                                                    body: JSON.stringify({'currUserToken' : currCookieToken}),
                                                                     credentials : 'include'
                                                                     }
                         ).then(res => {
                                 if(res.status == 200){
-                                    this.props.history.push('/');
+                                    this.props.removeCookieRequest()
+                                    setTimeout(() => {
+                                        this.props.history.push('/');
+                                    }, 1000)
                                 } else{
                                     (res.json()).then(res => {
                                         alert('Could not delete profile')
@@ -83,11 +94,13 @@ class UserHome extends React.Component {
 
     componentDidMount(){
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
-                                                                method: 'GET', 
+                                                                method: 'POST', 
                                                                 mode: 'cors',
                                                                 headers:{
+                                                                    'Content-Type' : 'application/json',                       
                                                                     'Accept' : 'application/json'
                                                                 },
+                                                                body: JSON.stringify({'currUserToken' : this.props.token}),
                                                                 credentials : 'include'
                                                                 }
                 ).then(res => {
@@ -102,12 +115,12 @@ class UserHome extends React.Component {
                         }).catch((error) => {
                                 console.log(error)
                         })
-            }
+        }
 
     render(){
         return(
             <div>
-                <Navbar />
+                <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest}/>
                 <MessageDisplay userMessage={this.state.userMessage}/> <br/>
                 <CreateListing authenticated={this.state.authenticated} /> 
                 <br />
