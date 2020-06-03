@@ -1,9 +1,12 @@
 import React from 'react'
+
+// using this npm module for displaying results from Google Places API in dropdown
 import PlacesAutocomplete from 'react-places-autocomplete'
 import Navbar from './navbar'
 import '../css/createListing.css'
 require('dotenv').config();
 
+// page for creating a listing
 class CreateListing extends React.Component{
     constructor(props){
         super(props)
@@ -19,6 +22,7 @@ class CreateListing extends React.Component{
         }
     }
 
+    // check for user authentication
     checkAuthenticated(){
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                             method: 'POST', 
@@ -56,6 +60,7 @@ class CreateListing extends React.Component{
         document.getElementById('searchInput').value = address
     }
 
+    // handling selection of an address from dropdown
     handleSelect = address => {
 
         let split_address = address.split(',')
@@ -82,6 +87,7 @@ class CreateListing extends React.Component{
         this.setState({ country : document.getElementById('countryName').value})
     };
 
+    // creating listing
     submitListing(event){
         event.preventDefault();
 

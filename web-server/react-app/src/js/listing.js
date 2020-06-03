@@ -1,10 +1,12 @@
 import React from 'react'
 import Navbar from './navbar';
 import '../css/listing.css'
+// Using confirmAlert npm module for confirming deletion of a listing
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 require('dotenv').config();
 
+// Page for display of a listing
 class Listing extends React.Component{
     constructor(props){
         super(props)
@@ -24,6 +26,7 @@ class Listing extends React.Component{
         }
     }
 
+    // HTTP request to fetch reviews associated with this listing 
     fetchListingReviews(listingID){
         this.setState({userReviews : []})
 
@@ -94,6 +97,7 @@ class Listing extends React.Component{
         })
     }
 
+    // checking user authentication so we can render this page differently for users who are authenticated.
     checkAuthenticated(){
         const  { id } = this.props.match.params;
 
@@ -128,6 +132,7 @@ class Listing extends React.Component{
         this.props.history.push(this.state.addReviewLink);
     }
 
+    // HTTP request to handle deleting a listing
     deleteListing(event){
         event.preventDefault();
 
@@ -176,6 +181,7 @@ class Listing extends React.Component{
         this.props.history.push('/' + reviewID + '/' + listingID +'/update_review');
     }
 
+    // HTTP request to handle deleting an authenticated user's review on this listing
     deleteReview(reviewID){
         const  { id } = this.props.match.params;
 
@@ -236,7 +242,7 @@ class Listing extends React.Component{
         )
     }
 }
-
+// displaying the user's reviews in separate to other reviews on this listing.
 function YourReviews(props){
     if(props.userReviews.length > 0){
         return props.userReviews.map(review => {

@@ -2,6 +2,7 @@ import React from 'react'
 import Navbar from './navbar';
 import '../css/forgotPass.css'
 
+// forgot password page
 class ForgotPassword extends React.Component{
     constructor(props){
         super(props)
@@ -44,6 +45,7 @@ class ForgotPassword extends React.Component{
         this.checkAuthenticated();
     }
 
+    // HTTP request for pws reset, sends email to user
     handleSubmit(event){
         event.preventDefault();
         fetch('http://'+process.env.REACT_APP_IP+':5000/forgot', {

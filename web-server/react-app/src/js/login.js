@@ -4,6 +4,7 @@ import '../css/login.css'
 // import { useCookies } from 'react-cookie';
 // const [setCookie] = useCookies(['token']);
 
+// Login page
 class LoginForm extends React.Component {
     constructor(props){
         super(props);
@@ -14,6 +15,7 @@ class LoginForm extends React.Component {
         }
     }
 
+    // check to see if user authenticated, if so, then redirecting to home
     checkAuthenticated(){
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                             method: 'POST', 
@@ -50,6 +52,7 @@ class LoginForm extends React.Component {
         this.setState({password : event.target.value})
     }
 
+    // HTTP request to submit user credentials and handle login
     submitCreds(event){
         event.preventDefault();
 
@@ -85,6 +88,7 @@ class LoginForm extends React.Component {
         })
     }
 
+    // redirect to forgot password page
     handleForgotPassword(event){
         event.preventDefault();
 

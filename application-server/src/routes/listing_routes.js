@@ -5,8 +5,14 @@ const Review = require('../models/review')
 
 const router = express.Router()
 
+
+// router for creating/modifying listings
+
+// post call for creating a listing. Requires authentication.
 router.post('/create_listing', auth, async (req, res) => {
     try{
+            
+            // ensuring single listing is not created twice
             const currListing = await Listing.find({number : req.body.number, 
                                                  street : req.body.street,
                                                  city: req.body.city,
@@ -16,7 +22,8 @@ router.post('/create_listing', auth, async (req, res) => {
             if(currListing.length > 0){
                 return res.status(404).send(JSON.stringify({'response' : 'This listing already exists.'}))
             } 
-
+            
+            // creating listing based on listing details passed in through request
             const listing = new Listing({
                 ...req.body,
                 contributor: req.user.username
@@ -30,8 +37,10 @@ router.post('/create_listing', auth, async (req, res) => {
         }
 })
 
+// fetchting a user's listings. POST call for passing in user token for authentication.
 router.post('/get_listings', auth, async (req, res) => {
     try{
+        // fetching listings based on document contributor (username)
         const foundListing = await Listing.find({ contributor : req.user.username})
         if(foundListing.length > 0){
             res.status(200).send(JSON.stringify({'response' : foundListing}))
@@ -43,6 +52,7 @@ router.post('/get_listings', auth, async (req, res) => {
     }
 })
 
+// fetching details of a listing. Does not require authentication.
 router.get('/get_listing_query', async (req, res) => {
     let currHouseNum = req.query.number;
     let currStreet = req.query.street;
@@ -51,6 +61,7 @@ router.get('/get_listing_query', async (req, res) => {
     let country = req.query.country;
     
     try{
+        // finding listing based on listing details passed in through request call
         const currListing = await Listing.find({number : currHouseNum, 
                                              street : currStreet,
                                              city: city,
@@ -67,6 +78,7 @@ router.get('/get_listing_query', async (req, res) => {
     }
 })
 
+// Fetching a listing based on listing ID. Does not require authentication.
 router.get('/get_listing/:id', async (req, res) => {
 
     let listingID = req.params.id;
@@ -85,15 +97,19 @@ router.get('/get_listing/:id', async (req, res) => {
 
 })
 
+// router for deleting a listing based on listing ID. Requires authentication.
 router.delete('/delete_listing/:listingID', auth, async (req, res) => {
 
     let listingDeleteID = req.params.listingID;
 
     try{
+        // finding listing based on listing id and ensuring listing contributor is authenticated user
         const findListing = await Listing.findOne({ _id : listingDeleteID, contributor : req.user.username})
-
+        
+        // upon finding listing, deleting review documents associated with listing.
         await Review.deleteMany({ listing : findListing._id })
 
+        // deleting listing document
         const deletedListing = await Listing.deleteOne({ _id : findListing._id})
         
         if(deletedListing){

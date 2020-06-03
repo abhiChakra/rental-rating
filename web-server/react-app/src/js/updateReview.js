@@ -2,6 +2,7 @@ import React from 'react'
 import Navbar from './navbar';
 import '../css/updateReview.css';
 
+// update review page
 class UpdateReview extends React.Component {
     constructor(props){
         super(props)
@@ -19,6 +20,7 @@ class UpdateReview extends React.Component {
         }
     }
 
+    // HTTP request to fetching existing review details to auto-fill sections of the form
     componentDidMount(){
         let reviewFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.reviewID + '/get_review';
         fetch(reviewFetch, {
@@ -110,6 +112,7 @@ class UpdateReview extends React.Component {
         this.setState({ reviewComments : event.target.value})
     }
 
+    // HTTP request to submit updated review
     handleReviewSubmit(event){
         event.preventDefault();
 

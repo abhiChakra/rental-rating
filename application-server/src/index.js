@@ -12,6 +12,7 @@ const app = express()
 app.use(express.json())
 
 app.use((req, res, next) => {
+    // enabling CORS access to web-server
     res.append('Access-Control-Allow-Origin', ['http://'+process.env.IP+':3000']);
     res.append('Access-Control-Allow-Credentials', 'true');
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');

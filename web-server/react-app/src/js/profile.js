@@ -5,6 +5,7 @@ import '../css/profile.css';
 // import { useCookies } from 'react-cookie';
 // const [setCookie] = useCookies(['token']);
 
+// app signup page
 class CreateProfile extends React.Component {
     constructor(props){
         super(props);
@@ -16,6 +17,7 @@ class CreateProfile extends React.Component {
         }
     }
 
+    // check to see if user authenticated, if so, then redirecting to home
     checkAuthenticated(){
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                             method: 'POST', 
@@ -59,6 +61,7 @@ class CreateProfile extends React.Component {
         this.setState({password : event.target.value})
     }
 
+    // HTTP request to submit details and create new user
     submitUser(event){
         event.preventDefault();
         

@@ -12,7 +12,10 @@ import Cookies from 'universal-cookie';
 import ForgotPassword from './forgotPassword';
 import ResetPassword from './resetPassword';
 
+// wrapper container containing routes to different pages
 function Container() {
+    // we are handling browser cookies through web-server end to comply with new 
+    // browser cookie policies. Using universal-cookie library.
     const cookies = new Cookies();
 
     function setCookieRequest(value){

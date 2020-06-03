@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './navbar';
+
+// using this npm module for displaying results from Google Places API in dropdown
 import PlacesAutocomplete from 'react-places-autocomplete'
 import '../css/home.css'
 require('dotenv').config();
 
+// Rate A Rental main page
 class Home extends React.Component {
     constructor(props){
         super(props);
@@ -24,6 +27,7 @@ class Home extends React.Component {
         this.setState({ address : address, message : '' });
     };
 
+    // handling selection of an address from dropdown
     handleSelect = address => {
 
         let split_address = address.split(',')
@@ -44,6 +48,7 @@ class Home extends React.Component {
         this.setState({ country : country})
     };
 
+    // HTTP request searching for listings of an address
     handleSubmit(event){
         event.preventDefault();
 

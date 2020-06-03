@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './navbar';
+// Using confirmAlert npm module for confirming deletion of user's profile
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import '../css/userHome.css'
 // import { useCookies } from 'react-cookie';
 // const [cookies] = useCookies(['token']);
 
+// main user home page
 class UserHome extends React.Component {
     constructor(props){
         super(props)
@@ -19,6 +21,7 @@ class UserHome extends React.Component {
                 }
     }
 
+    // HTTP request to fetch user's created listings for display
     fetchUserListings(){
         let currCookieToken = this.props.token;
         fetch('http://'+process.env.REACT_APP_IP+':5000/get_listings', {
@@ -46,6 +49,7 @@ class UserHome extends React.Component {
         })
     }
 
+    // HTTP request to handle deleting the user's profile
     deleteUserProfile(event){
         let currCookieToken = this.props.token;
         event.preventDefault();
@@ -92,6 +96,7 @@ class UserHome extends React.Component {
           });
     }
 
+    // HTTP request for ensuring user's authenticated, otherwise redirecting to login
     componentDidMount(){
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
                                                                 method: 'POST', 

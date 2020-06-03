@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 require('dotenv').config()
 
+
+// auth used for verifying user is authenticated by evaluating request token
 const auth = async (req, res, next) => {
 
     const token = req.body.currUserToken;
@@ -10,7 +12,7 @@ const auth = async (req, res, next) => {
         res.status(401).send(JSON.stringify({'response':'Unauthorized: No token provided'}))
     } else{
         try{
-            //const token = req.header('Authorization').replace('Bearer ', '')
+            // token evaluated based on token key stored as env variable
             const decodedId = jwt.verify(token, process.env.TOKEN_KEY)
             const user = await User.findOne({ _id: decodedId, 'tokens.token':token})
     

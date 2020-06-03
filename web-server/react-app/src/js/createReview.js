@@ -3,6 +3,7 @@ import Navbar from './navbar';
 import '../css/createReview.css'
 require('dotenv').config();
 
+// Page for creating a review for a listing
 class CreateReview extends React.Component {
     constructor(props){
         super(props)
@@ -70,6 +71,7 @@ class CreateReview extends React.Component {
         this.setState({ reviewComments : event.target.value})
     }
 
+    // HTTP request to submit new review
     handleReviewSubmit(event){
         event.preventDefault();
 

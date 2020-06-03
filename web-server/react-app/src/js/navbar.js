@@ -1,11 +1,14 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import '../css/navbar.css'
+
+// Using confirmAlert npm module for confirming logout
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 // import { useCookies } from 'react-cookie';
 // const [cookies, removeCookie] = useCookies(['token']);
 
+// central state based navbar of app
 class Navbar extends React.Component {
     constructor(props){
         super(props);
@@ -15,6 +18,8 @@ class Navbar extends React.Component {
         }
     }
 
+    // check for user authentication, if authenticated, navbar displays differently
+    // for example logout and UserHome instead of Login and Sign Up
     checkAuthenticated(){
         let currCookieToken = this.props.token;
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
@@ -44,6 +49,7 @@ class Navbar extends React.Component {
        this.checkAuthenticated();
     }
 
+    // HTTP request to handle logout
     logoutAction(event){
         event.preventDefault();
         let currCookieToken = this.props.token;

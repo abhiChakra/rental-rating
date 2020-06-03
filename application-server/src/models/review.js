@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+// Mongoose schema of a rental review
 const reviewSchema = mongoose.Schema({
     'overall_rating' : {
         type: Number,

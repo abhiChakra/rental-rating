@@ -2,6 +2,7 @@ import React from 'react'
 import Navbar from './navbar';
 import '../css/resetPassword.css';
 
+// reset password page
 class ResetPassword extends React.Component{
     constructor(props){
         super(props);
@@ -20,6 +21,7 @@ class ResetPassword extends React.Component{
         this.setState({confirmNewPassword : event.target.value})
     }
 
+    // HTTP request to handle a pwd reset
     handlePasswordReset(event){
         event.preventDefault();
 

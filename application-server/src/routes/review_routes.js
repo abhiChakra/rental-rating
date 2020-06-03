@@ -4,10 +4,14 @@ const Review = require('../models/review')
 
 const router = express.Router()
 
+// router for creating/updating/deleting review documents
+
+// endpoint for creating a review. Requires authentication.
 router.post('/:listingID/add_review', auth, async (req, res) => {
     let listingID = req.params.listingID;
     
     try{
+        // review document created using details passed in through request.
         const review = new Review({
             overall_rating: req.body.overall_rating,
             bug_rating: req.body.bug_rating,
@@ -26,6 +30,7 @@ router.post('/:listingID/add_review', auth, async (req, res) => {
     }
 })
 
+// endpoint for fetching a review based on review id. 
 router.post('/:review_id/get_review', auth, async (req, res) => {
     let reviewID = req.params.review_id;
 
@@ -44,9 +49,12 @@ router.post('/:review_id/get_review', auth, async (req, res) => {
     }
 })
 
+// endpoint for updating a review. Requires authentication.
 router.post('/:review_id/update_review', auth, async (req, res) => {
     let reviewID = req.params.review_id;
     try{
+
+        // ensuring review associated with ID was created by the authenticated user.
         const foundReviews = await Review.findOne({ _id : reviewID, contributor : req.user.username})
 
         if(foundReviews){
@@ -68,9 +76,10 @@ router.post('/:review_id/update_review', auth, async (req, res) => {
     }
 })
 
-
+// fetching reviews created by an authenticated user.
 router.get('/get_reviews', auth, async (req, res) => {
     try{
+        // fetching reviews based on username
         const foundReviews = await Review.find({contributor : req.user.username})
         if(foundReviews.length > 0){
             res.status(200).send(JSON.stringify({'response' : foundReviews}))
@@ -82,6 +91,7 @@ router.get('/get_reviews', auth, async (req, res) => {
     }
 })
 
+// endpoint for fetching reviews of a listing. 
 router.get('/:listingID/get_reviews', async (req, res) => {
 
     let listingID = req.params.listingID;
@@ -98,9 +108,11 @@ router.get('/:listingID/get_reviews', async (req, res) => {
     }
 })
 
+// endpoint for deleting a review. Requires authentication.
 router.delete('/delete_review/:reviewID', auth, async (req, res) => {
     let reviewID = req.params.reviewID;
     try{
+        // Ensuring review associated with reviewID was created by the authenticated user.
         const foundReview = await Review.deleteOne({_id : reviewID, contributor : req.user.username})
 
         if(foundReview){

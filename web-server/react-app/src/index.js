@@ -5,6 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import { CookiesProvider } from 'react-cookie';
 
 ReactDOM.render(
+  // rendering main wrapper Container of app
   <CookiesProvider>
       <Container />
   </CookiesProvider>,
