@@ -16,9 +16,6 @@ COPY src ./src
 # copying over further react material
 COPY public ./public
 
-# copying over required env vars
-COPY .env ./
-
 # copying over our nginx config file
 COPY nginx_container.conf ./
 
