@@ -5,7 +5,7 @@ FROM node:alpine
 WORKDIR /application-server
 
 # required to install packages
-COPY package*.json ./
+COPY package.json ./
 
 # installing npm packages
 RUN npm install
