@@ -1,0 +1,18 @@
+FROM node:alpine
+
+WORKDIR /react-app
+
+# required to install packages
+COPY package.json ./
+
+# installing npm packages
+RUN npm install
+
+# copying over react source material
+COPY src ./src
+
+# copying over further react material
+COPY public ./public
+
+CMD ["npm", "run", "start"]
+

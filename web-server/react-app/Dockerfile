@@ -5,7 +5,7 @@ FROM node:alpine as build-stage
 WORKDIR /react-app
 
 # required to install packages
-COPY package*.json ./
+COPY package.json ./
 
 # installing npm packages
 RUN npm install
@@ -15,9 +15,6 @@ COPY src ./src
 
 # copying over further react material
 COPY public ./public
-
-# copying over required env vars
-COPY .env ./
 
 # copying over our nginx config file
 COPY nginx_container.conf ./

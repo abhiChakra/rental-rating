@@ -1,0 +1,32 @@
+sudo: required
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker build -t abhichakra/rate-my-rental-react-test -f ./web-server/react-app/Dockerfile.dev ./web-server/react-app
+
+script:
+  - docker run -e CI=true abhichakra/rate-my-rental-react-test npm run test -- --coverage
+
+after_success:
+  - docker build -t abhichakra/rate-my-rental-react ./web-server/react-app
+  - docker build -t abhichakra/rate-my-rental-server ./application-server
+  # login to Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # pushing images to docker hub
+  - docker push abhichakra/rate-my-rental-react
+  - docker push abhichakra/rate-my-rental-server
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-2'
+  app: 'rate-a-rental'
+  env: 'RateARental-env'
+  bucket_name: 'elasticbeanstalk-us-east-2-414144082265'
+  bucket_path: 'rate-my-rental-bucket'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY

@@ -1,0 +1,1 @@
+it('Successful render', () => {});
