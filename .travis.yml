@@ -18,3 +18,15 @@ after_success:
   # pushing images to docker hub
   - docker push abhichakra/rate-my-rental-react
   - docker push abhichakra/rate-my-rental-server
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-2'
+  app: 'rate-a-rental'
+  env: 'RateARental-env'
+  bucket_name: 'elasticbeanstalk-us-east-2-414144082265'
+  bucket_path: 'rate-my-rental-bucket'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY

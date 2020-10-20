@@ -1,0 +1,32 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name" : "web-server",
+            "image" : "abhichakra/rate-my-rental-react",
+            "hostname" : "nginx",
+            "essential" : true,
+            "portMappings": [
+                {
+                  "hostPort": 80,
+                  "containerPort": 3000
+                }
+              ], 
+            "links": ["application-server"],
+            "memory": 128
+        }, 
+        {
+            "name" : "application-server", 
+            "image": "abhichakra/rate-my-rental-server",
+            "hostname" : "server",
+            "essential" : false,
+            "portMappings": [
+                {
+                  "hostPort": 5000,
+                  "containerPort": 5000
+                }
+              ], 
+            "memory": 128
+        }
+    ]
+}
