@@ -1,7 +1,10 @@
 import React from 'react';
 import Navbar from './navbar';
 import '../css/login.css'
+// import { useCookies } from 'react-cookie';
+// const [setCookie] = useCookies(['token']);
 
+// Login page
 class LoginForm extends React.Component {
     constructor(props){
         super(props);
@@ -12,13 +15,16 @@ class LoginForm extends React.Component {
         }
     }
 
+    // check to see if user authenticated, if so, then redirecting to home
     checkAuthenticated(){
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
-                                                            method: 'GET', 
+                                                            method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
+                                                                'Content-Type' : 'application/json',
                                                                 'Accept' : 'application/json'
                                                             },
+                                                            body: JSON.stringify({'currUserToken' : this.props.token}),
                                                             credentials : 'include'
                                                             }
         ).then(res => {
@@ -46,6 +52,7 @@ class LoginForm extends React.Component {
         this.setState({password : event.target.value})
     }
 
+    // HTTP request to submit user credentials and handle login
     submitCreds(event){
         event.preventDefault();
 
@@ -67,6 +74,7 @@ class LoginForm extends React.Component {
         ).then((res) => {
             if(res.status == 200){
                 (res.json()).then(res => {
+                    this.props.setCookieRequest(res.currToken)
                     let fetchURL = '/user/profile/' + res.username.toString();
                     this.props.history.push(fetchURL);
                 })
@@ -80,10 +88,17 @@ class LoginForm extends React.Component {
         })
     }
 
+    // redirect to forgot password page
+    handleForgotPassword(event){
+        event.preventDefault();
+
+        this.props.history.push('/forgot_password');
+    }
+
     render(){
         return(
             <div>
-                <Navbar />
+                <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest}/>
                 <div className='loginContainer'>
                     <div id='loginCreds' className='container'>
                         <form>
@@ -92,6 +107,7 @@ class LoginForm extends React.Component {
                             <br/>
                             <SubmitCreds submitCreds={(event) => this.submitCreds(event)} />
                             <br />
+                            <ForgotPassword handleForgotPassword={(event) => this.handleForgotPassword(event)}/>
                         </form>
                         <Message message={this.state.message} />
                     </div>
@@ -117,10 +133,19 @@ function Password(props){
     )
 }
 
+
 function SubmitCreds(props){
     return(
         <button type="button" className='loginButton' className="btn btn-primary btn-lg btn-block"  onClick={props.submitCreds}>
             Login
+        </button>
+    )
+}
+
+function ForgotPassword(props){
+    return(
+        <button type="button" className='loginButton' className="btn btn-link"  onClick={props.handleForgotPassword}>
+            Forgot Password
         </button>
     )
 }

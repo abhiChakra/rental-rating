@@ -1,10 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './navbar';
+// Using confirmAlert npm module for confirming deletion of user's profile
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import '../css/userHome.css'
+// import { useCookies } from 'react-cookie';
+// const [cookies] = useCookies(['token']);
 
+// main user home page
 class UserHome extends React.Component {
     constructor(props){
         super(props)
@@ -17,13 +21,17 @@ class UserHome extends React.Component {
                 }
     }
 
+    // HTTP request to fetch user's created listings for display
     fetchUserListings(){
+        let currCookieToken = this.props.token;
         fetch('http://'+process.env.REACT_APP_IP+':5000/get_listings', {
-                                                    method : 'GET',
+                                                    method : 'POST',
                                                     mode: 'cors',
                                                     headers: {
+                                                        'Content-Type' : 'application/json',
                                                         'Accept' : 'application/json',
                                                     }, 
+                                                    body: JSON.stringify({'currUserToken' : currCookieToken}),
                                                     credentials: 'include'
                                                     }
         ).then((res) => {
@@ -41,7 +49,9 @@ class UserHome extends React.Component {
         })
     }
 
+    // HTTP request to handle deleting the user's profile
     deleteUserProfile(event){
+        let currCookieToken = this.props.token;
         event.preventDefault();
 
         confirmAlert({
@@ -55,13 +65,18 @@ class UserHome extends React.Component {
                                                                     method: 'DELETE',
                                                                     mode: 'cors',
                                                                     headers:{
+                                                                        'Content-Type' : 'application/json',
                                                                         'Accept' : 'application/json'
                                                                     },
+                                                                    body: JSON.stringify({'currUserToken' : currCookieToken}),
                                                                     credentials : 'include'
                                                                     }
                         ).then(res => {
                                 if(res.status == 200){
-                                    this.props.history.push('/');
+                                    this.props.removeCookieRequest()
+                                    setTimeout(() => {
+                                        this.props.history.push('/');
+                                    }, 1000)
                                 } else{
                                     (res.json()).then(res => {
                                         alert('Could not delete profile')
@@ -81,13 +96,16 @@ class UserHome extends React.Component {
           });
     }
 
+    // HTTP request for ensuring user's authenticated, otherwise redirecting to login
     componentDidMount(){
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
-                                                                method: 'GET', 
+                                                                method: 'POST', 
                                                                 mode: 'cors',
                                                                 headers:{
+                                                                    'Content-Type' : 'application/json',                       
                                                                     'Accept' : 'application/json'
                                                                 },
+                                                                body: JSON.stringify({'currUserToken' : this.props.token}),
                                                                 credentials : 'include'
                                                                 }
                 ).then(res => {
@@ -102,12 +120,12 @@ class UserHome extends React.Component {
                         }).catch((error) => {
                                 console.log(error)
                         })
-            }
+        }
 
     render(){
         return(
             <div>
-                <Navbar />
+                <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest}/>
                 <MessageDisplay userMessage={this.state.userMessage}/> <br/>
                 <CreateListing authenticated={this.state.authenticated} /> 
                 <br />

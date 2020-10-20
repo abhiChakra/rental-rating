@@ -2,7 +2,10 @@ import React from 'react';
 import Navbar from './navbar';
 import '../css/profile.css';
 //import Recaptcha from 'react-recaptcha';
+// import { useCookies } from 'react-cookie';
+// const [setCookie] = useCookies(['token']);
 
+// app signup page
 class CreateProfile extends React.Component {
     constructor(props){
         super(props);
@@ -14,13 +17,16 @@ class CreateProfile extends React.Component {
         }
     }
 
+    // check to see if user authenticated, if so, then redirecting to home
     checkAuthenticated(){
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
-                                                            method: 'GET', 
+                                                            method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
+                                                                'Content-Type' : 'application/json',
                                                                 'Accept' : 'application/json'
                                                             },
+                                                            body: JSON.stringify({'currUserToken' : this.props.token}),
                                                             credentials : 'include'
                                                             }
         ).then(res => {
@@ -55,6 +61,7 @@ class CreateProfile extends React.Component {
         this.setState({password : event.target.value})
     }
 
+    // HTTP request to submit details and create new user
     submitUser(event){
         event.preventDefault();
         
@@ -72,6 +79,7 @@ class CreateProfile extends React.Component {
             ).then(res => {
                 if(res.status == 200){
                     (res.json()).then(res => {
+                        this.props.setCookieRequest(res.currToken)
                         let currFetch = '/user/profile/' + res.username.toString();
                         this.props.history.push(currFetch);
                     })
@@ -102,7 +110,7 @@ class CreateProfile extends React.Component {
     render(){
         return(
             <div>
-                <Navbar />
+                <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest} />
                 <div className='signupContainer'>
                     <div id='signupCreds' className='container'>
                         <form>
@@ -139,6 +147,9 @@ function Username(props){
 function Email(props){
     return(
         <div className="form-group">
+            <p>Note: For simple access, you do not need to provide a real email.</p> 
+            <p>However, you will be unable to reset your password through 'forgot password'.</p>
+            <br/>
             <input type="email" className="form-control signupEmail" id="emailInput" onChange={props.updateEmail} placeholder='user@example.com'></input>
         </div>
     )

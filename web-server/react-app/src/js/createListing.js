@@ -1,9 +1,12 @@
 import React from 'react'
+
+// using this npm module for displaying results from Google Places API in dropdown
 import PlacesAutocomplete from 'react-places-autocomplete'
 import Navbar from './navbar'
 import '../css/createListing.css'
 require('dotenv').config();
 
+// page for creating a listing
 class CreateListing extends React.Component{
     constructor(props){
         super(props)
@@ -19,13 +22,16 @@ class CreateListing extends React.Component{
         }
     }
 
+    // check for user authentication
     checkAuthenticated(){
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
-                                                            method: 'GET', 
+                                                            method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
+                                                                'Content-Type' : 'application/json',
                                                                 'Accept' : 'application/json'
                                                             },
+                                                            body: JSON.stringify({'currUserToken' : this.props.token}),
                                                             credentials : 'include'
                                                             }
         ).then(res => {
@@ -54,14 +60,12 @@ class CreateListing extends React.Component{
         document.getElementById('searchInput').value = address
     }
 
+    // handling selection of an address from dropdown
     handleSelect = address => {
-        console.log(address)
 
         let split_address = address.split(',')
         let street_address = split_address[0]
         let split_street_add = street_address.split(' ')
-
-        console.log(split_street_add)
 
         let houseNum = split_street_add[0].trim()
         let street = split_street_add[1].trim() + ' ' + split_street_add[2].trim()
@@ -70,7 +74,6 @@ class CreateListing extends React.Component{
         let province = split_address[2].trim()
         let country = split_address[3].trim()
 
-        console.log(street, city, province, country)
         document.getElementById('houseNum').value = houseNum
         document.getElementById('streetName').value = street
         document.getElementById('cityName').value = city
@@ -84,27 +87,26 @@ class CreateListing extends React.Component{
         this.setState({ country : document.getElementById('countryName').value})
     };
 
+    // creating listing
     submitListing(event){
         event.preventDefault();
 
-        console.log(document.getElementById('houseNum').value)
-
         let myListing = {
+                'currUserToken' : this.props.token,
                 'number' : document.getElementById('houseNum').value,
                 'street' : document.getElementById('streetName').value,
                 'city' : document.getElementById('cityName').value,
                 'province' : document.getElementById('provinceName').value,
                 'country' : document.getElementById('countryName').value,
         }
-        
-        console.log(JSON.stringify(myListing))
 
 
         fetch('http://'+process.env.REACT_APP_IP+':5000/create_listing', {
                                                        method: 'POST',
                                                        mode: 'cors',
                                                        headers: {
-                                                           'Content-Type' : 'application/json'
+                                                           'Content-Type' : 'application/json',
+                                                           'Accept' : 'application/json'
                                                        }, 
                                                        credentials : 'include',
                                                        body: JSON.stringify(myListing)
@@ -129,7 +131,7 @@ class CreateListing extends React.Component{
     render(){
         return(
             <div>
-                <Navbar />
+                <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest}/>
                 <h4 className='searchAddressTitle'>Search an address: </h4> <br/>
                     <PlacesAutocomplete
                         value={this.state.address}
@@ -146,7 +148,7 @@ class CreateListing extends React.Component{
                                aria-label = "Recipient's username"
                                aria-describedby = "basic-addon2"
                                 {...getInputProps({
-                                    placeholder: '24 Sussex Drive, Ottawa, ON, Canada',
+                                    placeholder: '81 St Mary St, Toronto, ON, Canada',
                                     className: 'location-search-input form-control',
                                     id: 'searchInput',
                                     type: "text"

@@ -3,6 +3,7 @@ import Navbar from './navbar';
 import '../css/createReview.css'
 require('dotenv').config();
 
+// Page for creating a review for a listing
 class CreateReview extends React.Component {
     constructor(props){
         super(props)
@@ -70,12 +71,14 @@ class CreateReview extends React.Component {
         this.setState({ reviewComments : event.target.value})
     }
 
+    // HTTP request to submit new review
     handleReviewSubmit(event){
         event.preventDefault();
 
         let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.listingID + '/add_review';
 
         let reviewBody = {
+            "currUserToken" : this.props.token,
             "overall_rating" : this.state.overallRating,
             "bug_rating" : this.state.bugRating,
             "admin_rating" : this.state.adminRating,
@@ -103,7 +106,6 @@ class CreateReview extends React.Component {
                })
            }
         }).catch(e => {
-            console.log("detecting error");
             console.log(e);
         })
     }
@@ -111,7 +113,7 @@ class CreateReview extends React.Component {
     render(){
         return(
             <div>
-                <Navbar />
+                <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest}/>
                 <h4 className='createReviewHeader'>Create your review for {this.state.listingAddress}</h4>
                 <div className='createReviewFormDiv'>
                     <RatingTitle handleReviewTitle={(event) => this.handleReviewTitle(event)}/>

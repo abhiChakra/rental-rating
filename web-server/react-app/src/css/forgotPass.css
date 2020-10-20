@@ -1,0 +1,19 @@
+.enterEmail{
+    margin-left: 4%;
+    margin-top: 2%;
+}
+
+.userEmail{
+    width: 35%;
+    margin-left: 5%;
+}
+
+.submitForgotPwd{
+    margin-left: 5%
+}
+
+.forgotPwdMessage{
+    margin-left: 5%;
+    size: 15px;
+    color: red;
+}

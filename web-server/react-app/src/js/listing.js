@@ -1,10 +1,12 @@
 import React from 'react'
 import Navbar from './navbar';
 import '../css/listing.css'
+// Using confirmAlert npm module for confirming deletion of a listing
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 require('dotenv').config();
 
+// Page for display of a listing
 class Listing extends React.Component{
     constructor(props){
         super(props)
@@ -24,6 +26,7 @@ class Listing extends React.Component{
         }
     }
 
+    // HTTP request to fetch reviews associated with this listing 
     fetchListingReviews(listingID){
         this.setState({userReviews : []})
 
@@ -40,8 +43,6 @@ class Listing extends React.Component{
             if(res.status == 200){
                 (res.json()).then(res => {
                     this.setState({reviews : res.response}, function() {
-                        console.log("inside")
-                        console.log(this.state.reviews)
                         let userReviews = []
                         let otherReviews = []
                         this.state.reviews.map(review => {
@@ -83,7 +84,6 @@ class Listing extends React.Component{
         ).then((res) => {
             if(res.status == 200){
                 (res.json()).then(res => {
-                    console.log(res.response._id)
                     this.setState({address : res.response.number + ' ' + res.response.street, city : res.response.city, province : res.response.province, 
                     country : res.response.country, contributor : res.response.contributor, listingID : res.response._id}, function() {this.checkAuthenticated()})
                 })
@@ -97,15 +97,18 @@ class Listing extends React.Component{
         })
     }
 
+    // checking user authentication so we can render this page differently for users who are authenticated.
     checkAuthenticated(){
         const  { id } = this.props.match.params;
 
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
-                                                            method: 'GET', 
+                                                            method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
+                                                                'Content-Type' : 'application/json',
                                                                 'Accept' : 'application/json'
                                                             },
+                                                            body: JSON.stringify({'currUserToken': this.props.token}),
                                                             credentials : 'include'
                                                             }
         ).then(res => {
@@ -129,8 +132,8 @@ class Listing extends React.Component{
         this.props.history.push(this.state.addReviewLink);
     }
 
+    // HTTP request to handle deleting a listing
     deleteListing(event){
-        console.log("deleting listing")
         event.preventDefault();
 
         confirmAlert({
@@ -147,8 +150,10 @@ class Listing extends React.Component{
                                                                     method: 'DELETE',
                                                                     mode: 'cors',
                                                                     headers: {
+                                                                        'Content-Type' : 'application/json',
                                                                         'Accept' : 'application/json'
                                                                     },
+                                                                    body: JSON.stringify({'currUserToken' : this.props.token}),
                                                                     credentials: 'include'        
                                                                 }
                     ).then(res => {
@@ -176,19 +181,19 @@ class Listing extends React.Component{
         this.props.history.push('/' + reviewID + '/' + listingID +'/update_review');
     }
 
+    // HTTP request to handle deleting an authenticated user's review on this listing
     deleteReview(reviewID){
         const  { id } = this.props.match.params;
-
-        console.log('deleting review')
-        console.log(reviewID)
 
         let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/delete_review/' + reviewID;
         fetch(currFetch, {
                             method: 'DELETE',
                             mode: 'cors',
                             headers: {
+                                'Content-Type' : 'application/json',
                                 'Accept' : 'application/json'
                             },
+                            body: JSON.stringify({'currUserToken' : this.props.token}),
                             credentials: 'include'
                             }
         ).then(res => {
@@ -203,7 +208,7 @@ class Listing extends React.Component{
     render(){
         return(
             <div>
-                <Navbar />
+                <Navbar token={this.props.token} removeCookieRequest={this.props.removeCookieRequest}/>
                 <h2 className='listingHeader'>{this.state.address}, {this.state.city},  
                  {this.state.province}, {this.state.country}</h2>
                 <p className='contributor'>Contributor: {this.state.contributor}</p>
@@ -237,9 +242,8 @@ class Listing extends React.Component{
         )
     }
 }
-
+// displaying the user's reviews in separate to other reviews on this listing.
 function YourReviews(props){
-    console.log(props.userReviews.length)
     if(props.userReviews.length > 0){
         return props.userReviews.map(review => {
                 return(

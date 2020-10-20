@@ -1,25 +1,35 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import '../css/navbar.css'
+
+// Using confirmAlert npm module for confirming logout
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+// import { useCookies } from 'react-cookie';
+// const [cookies, removeCookie] = useCookies(['token']);
 
+// central state based navbar of app
 class Navbar extends React.Component {
     constructor(props){
         super(props);
-        this.state ={
+        this.state = {
             authenticated : false,
             currUser : null
         }
     }
 
+    // check for user authentication, if authenticated, navbar displays differently
+    // for example logout and UserHome instead of Login and Sign Up
     checkAuthenticated(){
+        let currCookieToken = this.props.token;
         fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
-                                                            method: 'GET', 
+                                                            method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
+                                                                'Content-Type' : 'application/json',
                                                                 'Accept' : 'application/json'
                                                             },
+                                                            body: JSON.stringify({'currUserToken' : currCookieToken}),
                                                             credentials : 'include'
                                                             }
         ).then(res => {
@@ -39,9 +49,10 @@ class Navbar extends React.Component {
        this.checkAuthenticated();
     }
 
+    // HTTP request to handle logout
     logoutAction(event){
         event.preventDefault();
-
+        let currCookieToken = this.props.token;
         confirmAlert({
             title: 'Logout',
             message: 'Are you sure you want to logout?',
@@ -50,17 +61,26 @@ class Navbar extends React.Component {
                 label: 'Yes',
                 onClick: () => {
                     fetch('http://'+process.env.REACT_APP_IP+':5000/logout', {
-                                        method: 'GET',
+                                        method: 'POST',
                                         mode: 'cors',
                                         headers : {
+                                            'Content-Type' : 'application/json',
                                             'Accept': 'application/json'
                                            },
+                                        body: JSON.stringify({'currUserToken' : currCookieToken}),
                                         credentials: 'include'
                                        }
                         ).then(res => {
-                            if(res.status === 200){         
+                            if(res.status === 200){  
+                                this.props.removeCookieRequest()       
                                 this.setState({authenticated : false, currUser : null})
-                                this.props.history.push('/login');
+                                setTimeout(() => {
+                                    this.props.history.push('/');
+                                }, 1000)
+                            } else{
+                                (res.json()).then(res => {
+                                    console.log(res.response)
+                                })
                             }
                         }).catch((error) => {
                             console.log(error)

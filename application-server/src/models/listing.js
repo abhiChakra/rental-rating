@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+
+// Mongoose schema for a rental listing
 const listingSchema = mongoose.Schema({
     'number':{
         type: Number,
@@ -28,6 +30,7 @@ const listingSchema = mongoose.Schema({
     }
 })
 
+// virtual field of listing reviews
 listingSchema.virtual('reviews', {
     ref: 'Review',
     localField: '_id', 
