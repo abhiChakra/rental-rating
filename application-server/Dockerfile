@@ -15,4 +15,4 @@ COPY src ./src
 # exposing port 5000 on container
 EXPOSE 5000
 
-CMD ["node", "src/index.js"]
+CMD ["npm", "run", "start"]
