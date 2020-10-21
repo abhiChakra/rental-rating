@@ -28,13 +28,11 @@ FROM nginx:1.15
 # removing default nginx config file
 RUN rm /etc/nginx/conf.d/default.conf
 
+# exposing port 3000 on container
+EXPOSE 3000
+
 # copying our nginx config
 COPY --from=build-stage /react-app/nginx_container.conf /etc/nginx/conf.d/
 
 # copying production build from last stage to serve through nginx
 COPY --from=build-stage /react-app/build/ /usr/share/nginx/html
-
-# exposing port 3000 on container
-EXPOSE 3000
-
-CMD ["nginx", "-g", "daemon off;"]
