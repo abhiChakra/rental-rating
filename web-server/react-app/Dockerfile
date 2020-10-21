@@ -13,6 +13,9 @@ RUN npm install
 # copying over react source material
 COPY src ./src
 
+# copying over .env file
+COPY .env ./
+
 # copying over further react material
 COPY public ./public
 
