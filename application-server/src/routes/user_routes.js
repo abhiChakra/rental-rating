@@ -12,7 +12,7 @@ const crypto = require('crypto');
 // router for creating/authenticating/updating/deleting user documents
 
 router.get('/', (req, res) => {
-    res.status(200).send('Express application running!')
+    res.status(200).send('Express application running on port ' + process.env.PORT);
 })
 
 

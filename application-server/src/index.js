@@ -26,5 +26,5 @@ app.use(reviewRouter)
 
 
 app.listen(process.env.PORT, () => {
-    console.log("Express server running on port 5000")
+    console.log("Express server running on port " + process.env.PORT);
 })
