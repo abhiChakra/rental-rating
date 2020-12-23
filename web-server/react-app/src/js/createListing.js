@@ -35,7 +35,7 @@ class CreateListing extends React.Component{
                                                             credentials : 'include'
                                                             }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.setState({currUser : res.response.username})
                 })
@@ -112,7 +112,7 @@ class CreateListing extends React.Component{
                                                        body: JSON.stringify(myListing)
                                                     }
         ).then((res) => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.setState({message : res.response})
                     let currFetch = '/user/profile/' + this.state.currUser;
@@ -200,7 +200,7 @@ function Number(props){
     return(
         <div className='inputFormDiv'>
             <p className='inputFormDes'>House/building number: </p>
-            <input className="form-control inputForm" id='houseNum' placeholder='123'></input>
+            <input className="form-control inputForm" id='houseNum' placeholder='123' disabled></input>
         </div>
     )
 }
@@ -209,7 +209,7 @@ function Street(props){
     return(
         <div className='inputFormDiv'>
             <p className='inputFormDes'>Street Name: </p>
-            <input className="form-control inputForm" id='streetName' placeholder='Sussex Rd'></input>
+            <input className="form-control inputForm" id='streetName' placeholder='Sussex Rd' disabled></input>
         </div>
     )
 }
@@ -218,7 +218,7 @@ function City(props){
     return(
         <div className='inputFormDiv'>
             <p className='inputFormDes'>City:</p>
-            <input className="form-control inputForm" id='cityName' placeholder='Toronto'></input>
+            <input className="form-control inputForm" id='cityName' placeholder='Toronto' disabled></input>
         </div>
     )
 }
@@ -227,7 +227,7 @@ function Province(props){
     return(
         <div className='inputFormDiv'>
             <p className='inputFormDes'>Province:</p>
-            <input className="form-control inputForm" id='provinceName' placeholder='Ontario'></input>
+            <input className="form-control inputForm" id='provinceName' placeholder='Ontario' disabled></input>
         </div>
     )
 }
@@ -236,7 +236,7 @@ function Country(props){
     return(
         <div className='inputFormDiv'>
             <p className='inputFormDes'>Country:</p>
-            <input className="form-control inputForm" id='countryName' placeholder='Canada'></input>
+            <input className="form-control inputForm" id='countryName' placeholder='Canada' disabled></input>
         </div>
     )
 }

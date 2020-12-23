@@ -33,7 +33,7 @@ class Navbar extends React.Component {
                                                             credentials : 'include'
                                                             }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.setState({authenticated : true, currUser : res.response.username})
                 })

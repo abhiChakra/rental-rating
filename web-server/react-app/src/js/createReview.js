@@ -31,7 +31,7 @@ class CreateReview extends React.Component {
                             credentials: 'include'
                         }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.setState({ listingAddress : res.response.number + ' ' + res.response.street + 
                                                     ', ' + res.response.city + ', ' + res.response.province + ', ' +
@@ -98,7 +98,7 @@ class CreateReview extends React.Component {
                             body: JSON.stringify(reviewBody)
                             }
         ).then(res => {
-           if(res.status == 200){
+           if(res.status === 200){
                this.props.history.push('/listing/' + this.state.listingID)
            } else{
                (res.json()).then(res => {

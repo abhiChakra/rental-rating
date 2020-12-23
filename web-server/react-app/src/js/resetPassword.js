@@ -25,7 +25,7 @@ class ResetPassword extends React.Component{
     handlePasswordReset(event){
         event.preventDefault();
 
-        if(this.state.newPassword != this.state.confirmNewPassword || this.state.newPassword == null){
+        if(this.state.newPassword !== this.state.confirmNewPassword || this.state.newPassword == null){
             this.setState({newPwdResetMessage : 'Password fields do not match. Try again.'})
         } else{
             fetch('http://'+process.env.REACT_APP_IP+':5000/'+this.props.match.params.token+'/reset', {
@@ -38,7 +38,7 @@ class ResetPassword extends React.Component{
                                                                                                     body: JSON.stringify({'newPassword' : this.state.newPassword})
                                                                                                 }
                 ).then(res => {
-                    if(res.status == 200){
+                    if(res.status === 200){
                         alert("Your password has been reset.")
                         this.props.history.push('/login')
                     } else{

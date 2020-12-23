@@ -28,7 +28,7 @@ class LoginForm extends React.Component {
                                                             credentials : 'include'
                                                             }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.props.history.push('/user/profile/' + res.response.username)
                 })
@@ -72,7 +72,7 @@ class LoginForm extends React.Component {
                                             credentials : 'include'
                                             }
         ).then((res) => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.props.setCookieRequest(res.currToken)
                     let fetchURL = '/user/profile/' + res.username.toString();
