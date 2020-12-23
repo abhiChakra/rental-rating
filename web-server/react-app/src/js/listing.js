@@ -40,14 +40,14 @@ class Listing extends React.Component{
                             }
                          }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.setState({reviews : res.response}, function() {
                         let userReviews = []
                         let otherReviews = []
                         this.state.reviews.map(review => {
                             if(this.state.authenticated){
-                                if(review.contributor == this.state.currUser){
+                                if(review.contributor === this.state.currUser){
                                     userReviews.push(review)
                                 } else{
                                    otherReviews.push(review)
@@ -82,7 +82,7 @@ class Listing extends React.Component{
                                     }
                         }
         ).then((res) => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.setState({address : res.response.number + ' ' + res.response.street, city : res.response.city, province : res.response.province, 
                     country : res.response.country, contributor : res.response.contributor, listingID : res.response._id}, function() {this.checkAuthenticated()})
@@ -112,7 +112,7 @@ class Listing extends React.Component{
                                                             credentials : 'include'
                                                             }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.setState({ authenticated: true, currUser: res.response.username, addReviewLink : '/' + this.state.listingID + '/add_review'}, 
                     function() {this.fetchListingReviews(id)})
@@ -157,7 +157,7 @@ class Listing extends React.Component{
                                                                     credentials: 'include'        
                                                                 }
                     ).then(res => {
-                        if(res.status == 200){
+                        if(res.status === 200){
                             this.props.history.push('/user/profile/' + this.state.currUser)
                         } else{
                             alert('Error deleting listing')
@@ -197,7 +197,7 @@ class Listing extends React.Component{
                             credentials: 'include'
                             }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 this.fetchListingReviews(id);
             }
         }).catch(error => {
@@ -213,7 +213,7 @@ class Listing extends React.Component{
                  {this.state.province}, {this.state.country}</h2>
                 <p className='contributor'>Contributor: {this.state.contributor}</p>
                 <div>
-                    {(this.state.authenticated && this.state.contributor == this.state.currUser) ? 
+                    {(this.state.authenticated && this.state.contributor === this.state.currUser) ? 
                     <button type="button" className='btn btn-danger btn-lg deleteListingButton' onClick={(event) => this.deleteListing(event)}>Delete Listing</button>
                     :
                     null

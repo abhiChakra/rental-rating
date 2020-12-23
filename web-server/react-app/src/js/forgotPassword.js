@@ -29,7 +29,7 @@ class ForgotPassword extends React.Component{
                                                             credentials : 'include'
                                                             }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.props.history.push('/user/profile/' + res.response.username)
                 })
@@ -58,9 +58,9 @@ class ForgotPassword extends React.Component{
                                                                 body: JSON.stringify({'email' : this.state.userEmail})
                                                                 }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 this.setState({pwdResetMessage : 'An email has been sent to the provided email.', showEmailField : false})
-            } else if(res.status == 404){
+            } else if(res.status === 404){
                 this.setState({pwdResetMessage : 'Please provide a valid email address.'})
             }
         }).catch(e => {

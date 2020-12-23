@@ -30,7 +30,7 @@ class CreateProfile extends React.Component {
                                                             credentials : 'include'
                                                             }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.props.history.push('/user/profile/' + res.response.username)
                 })
@@ -77,7 +77,7 @@ class CreateProfile extends React.Component {
                                             body: JSON.stringify(userCreds)
                                             }
             ).then(res => {
-                if(res.status == 200){
+                if(res.status === 200){
                     (res.json()).then(res => {
                         this.props.setCookieRequest(res.currToken)
                         let currFetch = '/user/profile/' + res.username.toString();
@@ -85,14 +85,14 @@ class CreateProfile extends React.Component {
                     })
                 } else{
                     (res.json()).then(res => {
-                        if(res.response.name == 'MongoError'){
-                            if(res.response.errmsg.split(':')[2] == " email_1 dup key"){
+                        if(res.response.name === 'MongoError'){
+                            if(res.response.errmsg.split(':')[2] === " email_1 dup key"){
                                 this.setState({signupMessage : 'An account with this email already exists.\n Please try a different email or login.'})
-                            } else if(res.response.errmsg.split(':')[2] == " username_1 dup key"){
+                            } else if(res.response.errmsg.split(':')[2] === " username_1 dup key"){
                                 this.setState({signupMessage : 'Username already taken. Try a different one.'})
                             }
-                        } else if(res.response.name == 'ValidationError'){
-                            if(res.response.message == 'User validation failed: password: Password must be at least 6 characters'){
+                        } else if(res.response.name === 'ValidationError'){
+                            if(res.response.message === 'User validation failed: password: Password must be at least 6 characters'){
                                 this.setState({signupMessage : 'Password must be at least 6 characters'})
                             } else {
                                 this.setState({signupMessage : 'Must provide all required credentials.'})

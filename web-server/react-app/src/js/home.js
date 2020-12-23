@@ -65,7 +65,7 @@ class Home extends React.Component {
                           }
                          }
         ).then(res => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.setState({ queryRes : res.response})
                 })

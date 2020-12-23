@@ -35,7 +35,7 @@ class UserHome extends React.Component {
                                                     credentials: 'include'
                                                     }
         ).then((res) => {
-            if(res.status == 200){
+            if(res.status === 200){
                 (res.json()).then(res => {
                     this.setState({userListings : res.response})
                 })
@@ -72,7 +72,7 @@ class UserHome extends React.Component {
                                                                     credentials : 'include'
                                                                     }
                         ).then(res => {
-                                if(res.status == 200){
+                                if(res.status === 200){
                                     this.props.removeCookieRequest()
                                     setTimeout(() => {
                                         this.props.history.push('/');
@@ -109,7 +109,7 @@ class UserHome extends React.Component {
                                                                 credentials : 'include'
                                                                 }
                 ).then(res => {
-                            if(res.status == 200){
+                            if(res.status === 200){
                                     (res.json()).then(res => {
                                     this.fetchUserListings();
                                     this.setState({userMessage : 'Welcome back ' + res.response.username, authenticated : true})
