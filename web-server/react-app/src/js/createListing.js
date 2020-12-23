@@ -197,6 +197,7 @@ function Message(props){
 }
 
 function Number(props){
+    // default disabled field to avoid random address manipulation
     return(
         <div className='inputFormDiv'>
             <p className='inputFormDes'>House/building number: </p>
