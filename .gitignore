@@ -4,3 +4,5 @@ web_server.env
 ec2-us-east-2.pem
 node_modules/
 build/
+package-lock.json
+react_app.env

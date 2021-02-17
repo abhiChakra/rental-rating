@@ -19,7 +19,7 @@ class CreateProfile extends React.Component {
 
     // check to see if user authenticated, if so, then redirecting to home
     checkAuthenticated(){
-        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
+        fetch('/api/user/is_authenticated', {
                                                             method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
@@ -67,7 +67,7 @@ class CreateProfile extends React.Component {
         
         let userCreds = this.state
 
-        fetch('http://'+process.env.REACT_APP_IP+':5000/create_user', {
+        fetch('/api/create_user', {
                                             method: 'POST',
                                             mode: 'cors',
                                             headers: {

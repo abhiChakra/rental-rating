@@ -17,7 +17,7 @@ class LoginForm extends React.Component {
 
     // check to see if user authenticated, if so, then redirecting to home
     checkAuthenticated(){
-        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
+        fetch('/api/user/is_authenticated', {
                                                             method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
@@ -61,7 +61,7 @@ class LoginForm extends React.Component {
             'password' : this.state.password
         }
 
-        fetch('http://'+process.env.REACT_APP_IP+':5000/login', {
+        fetch('/api/login', {
                                             method: 'POST', 
                                             mode: 'cors',
                                             headers: {

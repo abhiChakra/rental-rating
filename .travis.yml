@@ -11,7 +11,7 @@ script:
   - docker run -e CI=true abhichakra/rate-my-rental-react-test npm run test -- --coverage
 
 after_success:
-  - docker build -t abhichakra/rate-my-rental-react ./web-server/react-app
+  - docker build -t abhichakra/rate-my-rental-react --build-arg REACT_APP_NGINXPROXY=${_NGINXPROXY} ./web-server/react-app
   - docker build -t abhichakra/rate-my-rental-server ./application-server
   # login to Docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin

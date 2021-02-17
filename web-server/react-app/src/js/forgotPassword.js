@@ -18,7 +18,7 @@ class ForgotPassword extends React.Component{
     }
 
     checkAuthenticated(){
-        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
+        fetch('/api/user/is_authenticated', {
                                                             method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
@@ -48,7 +48,7 @@ class ForgotPassword extends React.Component{
     // HTTP request for pws reset, sends email to user
     handleSubmit(event){
         event.preventDefault();
-        fetch('http://'+process.env.REACT_APP_IP+':5000/forgot', {
+        fetch('/api/forgot', {
                                                                 method: 'POST',
                                                                 mode: 'cors',
                                                                 headers: {

@@ -24,7 +24,7 @@ class CreateListing extends React.Component{
 
     // check for user authentication
     checkAuthenticated(){
-        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
+        fetch('/api/user/is_authenticated', {
                                                             method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
@@ -101,7 +101,7 @@ class CreateListing extends React.Component{
         }
 
 
-        fetch('http://'+process.env.REACT_APP_IP+':5000/create_listing', {
+        fetch('/api/create_listing', {
                                                        method: 'POST',
                                                        mode: 'cors',
                                                        headers: {

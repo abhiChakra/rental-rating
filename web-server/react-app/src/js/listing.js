@@ -30,7 +30,7 @@ class Listing extends React.Component{
     fetchListingReviews(listingID){
         this.setState({userReviews : []})
 
-        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + listingID + '/' + 'get_reviews';
+        let currFetch = '/api/' + listingID + '/' + 'get_reviews';
 
         fetch(currFetch, {
                             'method' : 'GET',
@@ -73,7 +73,7 @@ class Listing extends React.Component{
     componentDidMount(){
         const  { id } = this.props.match.params;
 
-        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/get_listing/' + id.toString();
+        let currFetch = '/api/get_listing/' + id.toString();
         fetch(currFetch, {
                             method: 'GET', 
                             mode: 'cors',
@@ -101,7 +101,7 @@ class Listing extends React.Component{
     checkAuthenticated(){
         const  { id } = this.props.match.params;
 
-        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
+        fetch('/api/user/is_authenticated', {
                                                             method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
@@ -145,7 +145,7 @@ class Listing extends React.Component{
                 onClick: () => {
                     const  { id } = this.props.match.params;
 
-                    let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/delete_listing/' + id;
+                    let currFetch = '/api/delete_listing/' + id;
                     fetch(currFetch,                            {
                                                                     method: 'DELETE',
                                                                     mode: 'cors',
@@ -185,7 +185,7 @@ class Listing extends React.Component{
     deleteReview(reviewID){
         const  { id } = this.props.match.params;
 
-        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/delete_review/' + reviewID;
+        let currFetch = '/api/delete_review/' + reviewID;
         fetch(currFetch, {
                             method: 'DELETE',
                             mode: 'cors',

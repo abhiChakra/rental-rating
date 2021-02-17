@@ -22,7 +22,7 @@ class Navbar extends React.Component {
     // for example logout and UserHome instead of Login and Sign Up
     checkAuthenticated(){
         let currCookieToken = this.props.token;
-        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
+        fetch('/api/user/is_authenticated', {
                                                             method: 'POST', 
                                                             mode: 'cors',
                                                             headers:{
@@ -60,7 +60,7 @@ class Navbar extends React.Component {
               {
                 label: 'Yes',
                 onClick: () => {
-                    fetch('http://'+process.env.REACT_APP_IP+':5000/logout', {
+                    fetch('/api/logout', {
                                         method: 'POST',
                                         mode: 'cors',
                                         headers : {

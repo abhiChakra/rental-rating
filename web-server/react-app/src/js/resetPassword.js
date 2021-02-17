@@ -28,7 +28,7 @@ class ResetPassword extends React.Component{
         if(this.state.newPassword !== this.state.confirmNewPassword || this.state.newPassword == null){
             this.setState({newPwdResetMessage : 'Password fields do not match. Try again.'})
         } else{
-            fetch('http://'+process.env.REACT_APP_IP+':5000/'+this.props.match.params.token+'/reset', {
+            fetch('/api/'+this.props.match.params.token+'/reset', {
                                                                                                     method: 'POST',
                                                                                                     mode: 'cors',
                                                                                                     headers: {

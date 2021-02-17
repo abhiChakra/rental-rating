@@ -21,7 +21,7 @@ class CreateReview extends React.Component {
     }
 
     componentDidMount(){
-        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/get_listing/' + this.state.listingID;
+        let currFetch = '/api/get_listing/' + this.state.listingID;
         fetch(currFetch, {
                             method: 'GET',
                             mode: 'cors',
@@ -75,7 +75,21 @@ class CreateReview extends React.Component {
     handleReviewSubmit(event){
         event.preventDefault();
 
-        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.listingID + '/add_review';
+        let overallRating = parseInt(this.state.overallRating, 10)
+        let bugRating = parseInt(this.state.bugRating, 10)
+        let adminRating = parseInt(this.state.adminRating, 10)
+        let locationRating = parseInt(this.state.locationRating, 10)
+
+        let ratings = [overallRating, bugRating, adminRating, locationRating]
+
+        ratings.forEach(rating => {
+            if(rating < 1 || rating > 5){
+                this.setState({createReviewMessage : "Must provide valid rating values"});
+                return
+            }
+        })
+
+        let currFetch = '/api/' + this.state.listingID + '/add_review';
 
         let reviewBody = {
             "currUserToken" : this.props.token,

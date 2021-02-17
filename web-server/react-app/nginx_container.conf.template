@@ -1,0 +1,21 @@
+server {
+    # listening on port 3000
+    listen 3000;
+
+    # place where static files are located within Docker container
+    root /usr/share/nginx/html/;
+    # HTML file to serve as index
+    index index.html;
+    
+    location / {   
+        try_files $uri /index.html;
+    }
+
+    location /api {
+        rewrite /api/(.*) /$1 break;
+        proxy_pass ${REACT_APP_NGINXPROXY};
+        client_max_body_size 100m;
+        add_header 'Access-Control-Allow-Origin' http://localhost:3000;
+        add_header 'Access-Control-Allow-Credentials' 'true';
+    }
+}

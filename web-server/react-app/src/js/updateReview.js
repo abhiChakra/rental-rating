@@ -22,7 +22,7 @@ class UpdateReview extends React.Component {
 
     // HTTP request to fetching existing review details to auto-fill sections of the form
     componentDidMount(){
-        let reviewFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.reviewID + '/get_review';
+        let reviewFetch = '/api/' + this.state.reviewID + '/get_review';
         fetch(reviewFetch, {
                             method: 'POST',
                             mode: 'cors',
@@ -62,7 +62,7 @@ class UpdateReview extends React.Component {
         })
 
 
-        let listingFetch = 'http://'+process.env.REACT_APP_IP+':5000/get_listing/' + this.state.listingID;
+        let listingFetch = '/api/get_listing/' + this.state.listingID;
         fetch(listingFetch, {
                             method: 'GET',
                             mode: 'cors',
@@ -116,7 +116,7 @@ class UpdateReview extends React.Component {
     handleReviewSubmit(event){
         event.preventDefault();
 
-        let currFetch = 'http://'+process.env.REACT_APP_IP+':5000/' + this.state.reviewID + '/update_review';
+        let currFetch = '/api/' + this.state.reviewID + '/update_review';
 
         let reviewBody = {
             'currUserToken' : this.props.token,

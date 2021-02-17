@@ -24,7 +24,7 @@ class UserHome extends React.Component {
     // HTTP request to fetch user's created listings for display
     fetchUserListings(){
         let currCookieToken = this.props.token;
-        fetch('http://'+process.env.REACT_APP_IP+':5000/get_listings', {
+        fetch('/api/get_listings', {
                                                     method : 'POST',
                                                     mode: 'cors',
                                                     headers: {
@@ -61,7 +61,7 @@ class UserHome extends React.Component {
               {
                 label: 'Yes',
                 onClick: () => {
-                    fetch('http://'+process.env.REACT_APP_IP+':5000/user/delete_user', {
+                    fetch('/api/user/delete_user', {
                                                                     method: 'DELETE',
                                                                     mode: 'cors',
                                                                     headers:{
@@ -98,7 +98,7 @@ class UserHome extends React.Component {
 
     // HTTP request for ensuring user's authenticated, otherwise redirecting to login
     componentDidMount(){
-        fetch('http://'+process.env.REACT_APP_IP+':5000/user/is_authenticated', {
+        fetch('/api/user/is_authenticated', {
                                                                 method: 'POST', 
                                                                 mode: 'cors',
                                                                 headers:{
