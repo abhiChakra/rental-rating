@@ -33,7 +33,7 @@ ENV REACT_APP_NGINXPROXY $REACT_APP_NGINXPROXY
 RUN env && npm run build
 
 # starting second, nginx build-stage
-FROM nginx:1.15
+FROM nginx:1.19
 
 # removing default nginx config file
 RUN rm /etc/nginx/conf.d/default.conf

@@ -82,46 +82,51 @@ class CreateReview extends React.Component {
 
         let ratings = [overallRating, bugRating, adminRating, locationRating]
 
+        let validRatings = true
+        
         ratings.forEach(rating => {
             if(rating < 1 || rating > 5){
-                this.setState({createReviewMessage : "Must provide valid rating values"});
-                return
+                validRatings = false
             }
-        })
+        });
 
-        let currFetch = '/api/' + this.state.listingID + '/add_review';
+        if(!validRatings){
+            this.setState({createReviewMessage : "Must provide valid rating values"});
+        } else{
+            let currFetch = '/api/' + this.state.listingID + '/add_review';
 
-        let reviewBody = {
-            "currUserToken" : this.props.token,
-            "overall_rating" : this.state.overallRating,
-            "bug_rating" : this.state.bugRating,
-            "admin_rating" : this.state.adminRating,
-            "location_rating" : this.state.locationRating,
-            "title" : this.state.reviewTitle,
-            "comments" : this.state.reviewComments
+            let reviewBody = {
+                "currUserToken" : this.props.token,
+                "overall_rating" : this.state.overallRating,
+                "bug_rating" : this.state.bugRating,
+                "admin_rating" : this.state.adminRating,
+                "location_rating" : this.state.locationRating,
+                "title" : this.state.reviewTitle,
+                "comments" : this.state.reviewComments
+            }
+
+            fetch(currFetch, {
+                                method : 'POST',
+                                mode: 'cors',
+                                headers: {
+                                    'Content-type' : 'application/json',
+                                    'Accept' : 'application/json'
+                                },
+                                credentials: 'include',
+                                body: JSON.stringify(reviewBody)
+                                }
+            ).then(res => {
+            if(res.status === 200){
+                this.props.history.push('/listing/' + this.state.listingID)
+            } else{
+                (res.json()).then(res => {
+                        this.setState({createReviewMessage : res.response})
+                })
+            }
+            }).catch(e => {
+                console.log(e);
+            })
         }
-
-        fetch(currFetch, {
-                            method : 'POST',
-                            mode: 'cors',
-                            headers: {
-                                'Content-type' : 'application/json',
-                                'Accept' : 'application/json'
-                            },
-                            credentials: 'include',
-                            body: JSON.stringify(reviewBody)
-                            }
-        ).then(res => {
-           if(res.status === 200){
-               this.props.history.push('/listing/' + this.state.listingID)
-           } else{
-               (res.json()).then(res => {
-                    this.setState({createReviewMessage : res.response})
-               })
-           }
-        }).catch(e => {
-            console.log(e);
-        })
     }
 
     render(){
